@@ -1,5 +1,6 @@
 ### IntelliJ ###
 .idea/
+out/
 
 ### MacOS ###
 .DS_Store
