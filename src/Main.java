@@ -2,17 +2,6 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
-    BrewButton brewButton;
-    HeatingButton heatingButton;
-    PowerButton powerButton;
-    TemperatureSensor temperatureSensor;
-    VoltageSensor voltageSensor;
-    ReservoirSensor reservoirSensor;
-    LidSensor lidSensor;
-    CarafeSensor carafeSensor;
-    LEDBank ledBank;
-    Heater heater;
-    Timer timer;
     static final Scanner scanner = new Scanner(System.in);
     public static  void standBy() {
 
