@@ -1,8 +1,18 @@
-import java.util.Objects;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
-
+    BrewButton brewButton;
+    HeatingButton heatingButton;
+    PowerButton powerButton;
+    TemperatureSensor temperatureSensor;
+    VoltageSensor voltageSensor;
+    ReservoirSensor reservoirSensor;
+    LidSensor lidSensor;
+    CarafeSensor carafeSensor;
+    LEDBank ledBank;
+    Heater heater;
+    Timer timer;
     public static  void standBy() {
 
     }
@@ -15,51 +25,109 @@ public class Main {
 
     }
 
-    public static String getUserInput(){
-            Scanner scanner = new Scanner(System.in);
+    public static String getUserInput() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choices: brew button, heating button, power button");
 
-            System.out.println("Welcome to the Java Coffee Machine!");
-            System.out.println("Choices: brew button, heating button, power button");
+        while (true) {
+            System.out.print("Enter your choice: ");
+            String userChoice = scanner.nextLine().toLowerCase();
 
-            String userChoice;
-            boolean validChoice = false;
-
-            while (!validChoice) {
-                System.out.print("Enter your choice: ");
-                userChoice = scanner.nextLine().toLowerCase();
-
-                switch (userChoice) {
-                    case "brew button":
-                        validChoice = true;
-                        return "brew";
-                    case "heating button":
-                        validChoice = true;
-                        return "heating";
-                    case "power button":
-                        validChoice = true;
-                        return "power";
-                    default:
-                        System.out.println("Invalid choice. Please select brew button, heating button, or power button.");
-                }
+            switch (userChoice) {
+                case "brew button":
+                    scanner.close();
+                    return "brew";
+                case "heating button":
+                    scanner.close();
+                    return "heating";
+                case "power button":
+                    scanner.close();
+                    return "power";
+                default:
+                    System.out.println("Invalid choice. Please select brew button, heating button, or power button.");
             }
-
-            // Close Scanner
-            scanner.close();
-        return "";
+        }
     }
 
     private static void choiceHandler(String input){// input = "brew" || "power" || "heating"
         System.out.println("Word is: " + input);
         if (input.equals("brew")){
             System.out.println("Brew button pressed!");
+            // Run brewing
         } else if(input.equals("heating")){
             System.out.println("Heating button activated!");
+            // Run heating
         }else if(input.equals("power")){
             System.out.println("Power button toggled!");
+            // Run power
         }else{
             System.out.print("ERROR In ChoiceHandler SET ERROR LED");
         }
     }
+
+    private static void collectCoffeeMachineInfo() {
+
+
+        boolean waterStatus;
+        int voltage;
+        int temperature;
+        boolean lidStatus;
+        boolean carafeStatus;
+
+        while (true) {
+            try {
+                Scanner scanner = new Scanner(System.in);
+                System.out.print("Does the reservoir contain water? (true/false): ");
+                waterStatus = scanner.nextBoolean();
+
+                System.out.print("What is the current voltage? (in volts): ");
+                voltage = scanner.nextInt();
+
+                System.out.print("What is the current temperature? (in Fahrenheit): ");
+                temperature = scanner.nextInt();
+
+                System.out.print("Is the lid closed? (true/false): ");
+                lidStatus = scanner.nextBoolean();
+
+                System.out.print("Is the carafe in place? (true/false): ");
+                carafeStatus = scanner.nextBoolean();
+
+                // Process the collected information
+                System.out.println("\nCoffee Machine Information:");
+                System.out.println("Water status: " + waterStatus);
+                System.out.println("Voltage: " + voltage + " V");
+                System.out.println("Temperature: " + temperature + "°F");
+                System.out.println("Lid status: " + lidStatus);
+                System.out.println("Carafe status: " + carafeStatus);
+                scanner.close();
+                break; // Exit the loop if input is valid
+            } catch (NoSuchElementException e) {
+                System.out.println("Invalid input. Please try again.");
+                //scanner.nextLine();
+            }
+        }
+    }
+
+    public static void firstUserPromptForPowerButton() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome to the Java Coffee Machine!");
+        System.out.println("Please press the power button.");
+
+        while (true) {
+            System.out.print("Enter your choice (power button): ");
+            String userChoice = scanner.nextLine().toLowerCase();
+
+            if (userChoice.equals("power button")) {
+                // Close Scanner
+                scanner.close();
+                return;
+            } else {
+                System.out.println("Invalid choice. Please select the power button.");
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
 
@@ -77,9 +145,11 @@ public class Main {
         Timer timer = new Timer();
 
         // Prompt user for input and return string based on input
-        choiceHandler(getUserInput()); // returns "brew" || "power" || "heating"
 
+        //firstUserPromptForPowerButton();
+        getUserInput();
+        //choiceHandler(); // returns "brew" || "power" || "heating"
 
-
+        collectCoffeeMachineInfo();
     }
 }
