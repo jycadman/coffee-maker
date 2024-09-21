@@ -8,6 +8,7 @@ public class CarafeSensor {
     public void setCarafeIn(){
         isInPlace = true;
     }
+    public void set(boolean input){ isInPlace = input;}
 
     public void removeCarafeOut(){
         isInPlace = false;

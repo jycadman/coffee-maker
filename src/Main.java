@@ -55,7 +55,7 @@ public class Main {
         }
     }
 
-    private static void collectCoffeeMachineInfo() {
+    private static Object[] collectCoffeeMachineInfo() {
         //Scanner scanner = new Scanner(System.in);
         boolean waterStatus;
         int voltage;
@@ -88,8 +88,10 @@ public class Main {
                 System.out.println("Temperature: " + temperature + "°F");
                 System.out.println("Lid status: " + lidStatus);
                 System.out.println("Carafe status: " + carafeStatus);
+
+                // Return the collected data as an array
+                return new Object[]{waterStatus, voltage, temperature, lidStatus, carafeStatus};
                 //scanner.close();
-                break; // Exit the loop if input is valid
             } catch (NoSuchElementException e) {
                 System.out.println("Invalid input. Please try again.");
                 scanner.nextLine();
@@ -133,16 +135,34 @@ public class Main {
         Heater heater = new Heater();
         Timer timer = new Timer();
 
-
+        //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
+        //////// NOT FUTURE SOCKET SECTION ////////
 
+
+        //////// FUTURE SOCKET SECTION ////////
         powerButton.turnOn(); // Turn the power button on the first time
+        /////// END FUTURE SOCKET SECTION /////////
 
-        collectCoffeeMachineInfo(); // Simulating socket information received from coffee maker
+
+        //////// NOT FUTURE SOCKET SECTION ////////
+        //Collect information for the sensors from user(will be from socket later on
+        Object[] coffeeInfo = collectCoffeeMachineInfo(); // Simulating socket information received from coffee maker Need to send data to main and handle
+        //////// END NOT FUTURE SOCKET SECTION ////////
+
+
+        //////// FUTURE SOCKET SECTION ////////
+        // Set sensor values from coffeeInfo object
+        reservoirSensor.set((boolean)coffeeInfo[0]);
+        voltageSensor.setVoltage((int) coffeeInfo[1]);
+        temperatureSensor.setTemp((int) coffeeInfo[2]);
+        lidSensor.set((boolean) coffeeInfo[3]);
+        carafeSensor.set((boolean) coffeeInfo[4]);
+        /////// END FUTURE SOCKET SECTION /////////
+
+
 
         choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle
-
-
 
     }
 }

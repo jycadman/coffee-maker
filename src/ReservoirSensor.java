@@ -6,6 +6,10 @@ public class ReservoirSensor {
         hasWater = false;
     }
 
+    public void set(boolean input){
+        hasWater = input;
+    }
+
     public void fill() {
         //Fill the reservoir
         hasWater = true;
