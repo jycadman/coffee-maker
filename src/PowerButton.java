@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class PowerButton {
     public static boolean coffeeMachineOn;
     void turnOn() {
