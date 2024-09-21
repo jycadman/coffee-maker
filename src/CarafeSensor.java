@@ -5,11 +5,11 @@ public class CarafeSensor {
         isInPlace = false;
     }
 
-    public void setCarafe(){
+    public void setCarafeIn(){
         isInPlace = true;
     }
 
-    public void removeCarafe(){
+    public void removeCarafeOut(){
         isInPlace = false;
     }
 
@@ -20,7 +20,7 @@ public class CarafeSensor {
     public static void main(String[] args){
         CarafeSensor test = new CarafeSensor();
         System.out.println(test.getIsInPlace());
-        test.setCarafe();
+        test.setCarafeIn();
         System.out.println(test.getIsInPlace());
     }
 }
