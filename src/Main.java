@@ -141,18 +141,18 @@ public class Main {
 
 
         //////// FUTURE SOCKET SECTION ////////
-        powerButton.turnOn(); // Turn the power button on the first time
+        powerButton.turnOn(); // Turn the power button on the first time, check first power button push with socket
         /////// END FUTURE SOCKET SECTION /////////
 
 
         //////// NOT FUTURE SOCKET SECTION ////////
-        //Collect information for the sensors from user(will be from socket later on
+        //Collect information for the sensors from user(will be from socket later on)
         Object[] coffeeInfo = collectCoffeeMachineInfo(); // Simulating socket information received from coffee maker Need to send data to main and handle
         //////// END NOT FUTURE SOCKET SECTION ////////
 
 
         //////// FUTURE SOCKET SECTION ////////
-        // Set sensor values from coffeeInfo object
+        // Set sensor values from coffeeInfo object Change to socket info later
         reservoirSensor.set((boolean)coffeeInfo[0]);
         voltageSensor.setVoltage((int) coffeeInfo[1]);
         temperatureSensor.setTemp((int) coffeeInfo[2]);
