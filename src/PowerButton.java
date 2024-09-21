@@ -9,4 +9,5 @@ public class PowerButton {
     void turnOff() {
         coffeeMachineOn = false;
     }
+
 }

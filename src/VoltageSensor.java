@@ -1,6 +1,7 @@
 import java.util.Random;
 
 public class VoltageSensor {
+
     public static int voltage = 120;
 
     public void checkVoltage(boolean correctVoltage) {
