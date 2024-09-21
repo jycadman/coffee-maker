@@ -2,27 +2,32 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
+
+
     static final Scanner scanner = new Scanner(System.in);
+
+
     public static  void standBy() {
 
     }
+
 
     public static void brewing(){
 
     }
 
+
     public static void heating(){
 
     }
 
+
     public static String getUserInput() {
         //Scanner scanner = new Scanner(System.in);
         System.out.println("Choices: brew button, heating button, power button");
-
         while (true) {
             System.out.print("Enter your choice: ");
             String userChoice = scanner.nextLine().toLowerCase();
-
             switch (userChoice) {
                 case "brew button":
                     //scanner.close();
@@ -38,6 +43,7 @@ public class Main {
             }
         }
     }
+
 
     private static void choiceHandler(String input){// input = "brew" || "power" || "heating"
         System.out.println("Word is: " + input);
@@ -55,6 +61,7 @@ public class Main {
         }
     }
 
+
     private static Object[] collectCoffeeMachineInfo() {
         //Scanner scanner = new Scanner(System.in);
         boolean waterStatus;
@@ -62,24 +69,20 @@ public class Main {
         int temperature;
         boolean lidStatus;
         boolean carafeStatus;
-
         while (true) {
             try {
 
                 System.out.print("Does the reservoir contain water? (true/false): ");
                 waterStatus = scanner.nextBoolean();
-
                 System.out.print("What is the current voltage? (in volts): ");
                 voltage = scanner.nextInt();
-
                 System.out.print("What is the current temperature? (in Fahrenheit): ");
                 temperature = scanner.nextInt();
-
                 System.out.print("Is the lid closed? (true/false): ");
                 lidStatus = scanner.nextBoolean();
-
                 System.out.print("Is the carafe in place? (true/false): ");
                 carafeStatus = scanner.nextBoolean();
+
 
                 // Process the collected information
                 System.out.println("\nCoffee Machine Information:");
@@ -99,16 +102,14 @@ public class Main {
         }
     }
 
+
     public static void firstUserPromptForPowerButton() {
         //Scanner scanner = new Scanner(System.in);
-
         System.out.println("Welcome to the Java Coffee Machine!");
         System.out.println("Please press the power button.");
-
         while (true) {
             System.out.print("Enter your choice (power button): ");
             String userChoice = scanner.nextLine().toLowerCase();
-
             if (userChoice.equals("power button")) {
                 // Close Scanner
                 //scanner.close();
@@ -121,7 +122,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-
         // Initialize our coffee machine components
         BrewButton brewButton = new BrewButton();
         HeatingButton heatingButton = new HeatingButton();
@@ -134,6 +134,7 @@ public class Main {
         LEDBank ledBank = new LEDBank();
         Heater heater = new Heater();
         Timer timer = new Timer();
+
 
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
@@ -161,8 +162,6 @@ public class Main {
         /////// END FUTURE SOCKET SECTION /////////
 
 
-
         choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle
-
     }
 }
