@@ -13,6 +13,7 @@ public class Main {
     LEDBank ledBank;
     Heater heater;
     Timer timer;
+    static final Scanner scanner = new Scanner(System.in);
     public static  void standBy() {
 
     }
@@ -26,7 +27,7 @@ public class Main {
     }
 
     public static String getUserInput() {
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
         System.out.println("Choices: brew button, heating button, power button");
 
         while (true) {
@@ -35,13 +36,13 @@ public class Main {
 
             switch (userChoice) {
                 case "brew button":
-                    scanner.close();
+                    //scanner.close();
                     return "brew";
                 case "heating button":
-                    scanner.close();
+                    //scanner.close();
                     return "heating";
                 case "power button":
-                    scanner.close();
+                    //scanner.close();
                     return "power";
                 default:
                     System.out.println("Invalid choice. Please select brew button, heating button, or power button.");
@@ -66,8 +67,7 @@ public class Main {
     }
 
     private static void collectCoffeeMachineInfo() {
-
-
+        //Scanner scanner = new Scanner(System.in);
         boolean waterStatus;
         int voltage;
         int temperature;
@@ -76,7 +76,7 @@ public class Main {
 
         while (true) {
             try {
-                Scanner scanner = new Scanner(System.in);
+
                 System.out.print("Does the reservoir contain water? (true/false): ");
                 waterStatus = scanner.nextBoolean();
 
@@ -99,17 +99,17 @@ public class Main {
                 System.out.println("Temperature: " + temperature + "°F");
                 System.out.println("Lid status: " + lidStatus);
                 System.out.println("Carafe status: " + carafeStatus);
-                scanner.close();
+                //scanner.close();
                 break; // Exit the loop if input is valid
             } catch (NoSuchElementException e) {
                 System.out.println("Invalid input. Please try again.");
-                //scanner.nextLine();
+                scanner.nextLine();
             }
         }
     }
 
     public static void firstUserPromptForPowerButton() {
-        Scanner scanner = new Scanner(System.in);
+        //Scanner scanner = new Scanner(System.in);
 
         System.out.println("Welcome to the Java Coffee Machine!");
         System.out.println("Please press the power button.");
@@ -120,7 +120,7 @@ public class Main {
 
             if (userChoice.equals("power button")) {
                 // Close Scanner
-                scanner.close();
+                //scanner.close();
                 return;
             } else {
                 System.out.println("Invalid choice. Please select the power button.");
@@ -144,12 +144,14 @@ public class Main {
         Heater heater = new Heater();
         Timer timer = new Timer();
 
-        // Prompt user for input and return string based on input
 
-        //firstUserPromptForPowerButton();
-        getUserInput();
-        //choiceHandler(); // returns "brew" || "power" || "heating"
+        firstUserPromptForPowerButton();
 
-        collectCoffeeMachineInfo();
+        collectCoffeeMachineInfo(); // Simulating socket information received
+
+        choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle(Will be used easier when we use a socket)
+
+
+
     }
 }
