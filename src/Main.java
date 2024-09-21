@@ -145,11 +145,13 @@ public class Main {
         Timer timer = new Timer();
 
 
-        firstUserPromptForPowerButton();
+        firstUserPromptForPowerButton(); // User clicks the power button the first time
 
-        collectCoffeeMachineInfo(); // Simulating socket information received
+        powerButton.turnOn(); // Turn the power button on the first time
 
-        choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle(Will be used easier when we use a socket)
+        collectCoffeeMachineInfo(); // Simulating socket information received from coffee maker
+
+        choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle
 
 
 
