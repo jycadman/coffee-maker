@@ -1,18 +1,27 @@
-// Temp Sensor, Reservoir Sensor, Carafe Sensor, LED Bank
 public class BrewButton {
-    private TemperatureSensor temperatureSensor;
-    private ReservoirSensor reservoirSensor;
-    private CarafeSensor carafeSensor;
-    private Timer timer;
-
+    private boolean isOn;
     public BrewButton(){
-        TemperatureSensor temperatureSensor = new TemperatureSensor();
-        ReservoirSensor reservoirSensor = new ReservoirSensor();
-        CarafeSensor carafeSensor = new CarafeSensor();
-        Timer timer = new Timer();
+        isOn = false;
     }
 
+    public void turnOff(){
+        isOn = false;
+    }
 
+    public void turnOn(){
+        isOn = true;
+    }
 
+    public boolean getStatus(){
+        return isOn;
+    }
+
+    public static void main(String[] Args){
+        BrewButton test = new BrewButton();
+        System.out.println(test.getStatus());
+        test.turnOn();
+        System.out.println(test.getStatus());
+
+    }
 
 }
