@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -5,9 +10,10 @@ public class Main {
 
 
     static final Scanner scanner = new Scanner(System.in);
+    static private ServerSocket serverSocket;
+    static private Socket mySocket = null;
 
-
-    public static  void standBy() {
+    public static void standBy() {
 
     }
 
@@ -135,15 +141,53 @@ public class Main {
         Heater heater = new Heater();
         Timer timer = new Timer();
 
+        //////// SOCKET SECTION ////////
+        BufferedReader in = null;
+        try {
+            serverSocket = new ServerSocket(5000);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            System.out.println("waiting for socket connection...");
+            mySocket = serverSocket.accept();
+            System.out.println("socket connected");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // For testing that the socket works
+        while(true){
+            try {
+                String fromSocket = in.readLine();
+                if (fromSocket.equals("quit")){
+                    break;
+                }
+
+                System.out.println(fromSocket);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        /////// END SOCKET SECTION /////////
 
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
         //////// NOT FUTURE SOCKET SECTION ////////
 
 
-        //////// FUTURE SOCKET SECTION ////////
+
+
         powerButton.turnOn(); // Turn the power button on the first time, check first power button push with socket
-        /////// END FUTURE SOCKET SECTION /////////
+
 
 
         //////// NOT FUTURE SOCKET SECTION ////////
