@@ -8,6 +8,8 @@ public class BrewButton {
         isOn = false;
     }
 
+    public void negate(){isOn = !isOn;}
+
     public void turnOn(){
         isOn = true;
     }

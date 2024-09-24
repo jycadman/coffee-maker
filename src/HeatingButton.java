@@ -12,6 +12,10 @@ public class HeatingButton {
         isOn = true;
     }
 
+    public void negate(){
+        isOn = !isOn;
+    }
+
     public boolean getStatus(){
         return isOn;
     }

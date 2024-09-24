@@ -19,7 +19,7 @@ public class Heater {
     }
 
     public void heatUp() {
-        // Heater has to me shut off in main will run forever here while increasing unless we use commented out code
+        // Heater has to be shut off in main will run forever here while increasing unless we use commented out code
         while (heaterStatus) {
             heatTemperature += incDecAmount;
             waitOneSecond();

@@ -8,43 +8,80 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
-
-
-    static final Scanner scanner = new Scanner(System.in);BrewButton brewButton = new BrewButton();
-    HeatingButton heatingButton;
+    static final Scanner scanner = new Scanner(System.in);
+    static BrewButton brewButton;
+    static HeatingButton heatingButton;
     static PowerButton powerButton;
-    TemperatureSensor temperatureSensor;
+    static TemperatureSensor temperatureSensor;
     static VoltageSensor voltageSensor;
     static ReservoirSensor reservoirSensor;
     static LidSensor lidSensor;
     static CarafeSensor carafeSensor;
     static LEDBank ledBank;
-    Heater heater;
-    Timer timer;
+    static Heater heater;
+    static Timer timer;
     static private ServerSocket serverSocket;
     static private Socket mySocket = null;
 
+
     public static void standBy() {
-
-        if(voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.get() && lidSensor.get()) {
-            ledBank.setErrorLED(false);
-            ledBank.setBrewLED(false);
-            ledBank.setReservoirLED(false);
-            ledBank.setVoltageLED(true);
-            ledBank.setHeatingLED(false);
-        } else
-            ledBank.setErrorLED(true);
-
+        powerButton.negate();
+        setAllLEDsToFalse();
+        if (powerButton.get()) {
+            if (voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.get() && lidSensor.get()) {
+                ledBank.setErrorLED(false);
+                ledBank.setBrewLED(false);
+                ledBank.setReservoirLED(false);
+                ledBank.setVoltageLED(true);
+                ledBank.setHeatingLED(false);
+            } else
+                ledBank.setErrorLED(true);
+        }
+        else{
+            System.out.print("Power down Appliance??  Talk with group on what to do");
+        }
     }
 
 
     public static void brewing(){
+        brewButton.negate();
 
     }
 
 
     public static void heating(){
+        // Done heating button, carafe sensor temp sensor, carafe sensor, led bank, heater, timer
+        heatingButton.negate();
 
+        // Basic check for carafe
+        if(!carafeSensor.get()){
+            setAllLEDsToFalse(); // Set all LEDS to off
+            ledBank.setErrorLED(true);
+            System.out.print("\n Error State in Heating, Talk with group on what to do");
+        }
+
+        ledBank.setHeatingLED(true);
+
+        if(temperatureSensor.getTemp() < 215){
+            // Heat up heating element
+            timer.set(15);
+            heater.heatUp();
+        } else if (temperatureSensor.getTemp() < 250 && temperatureSensor.getTemp() > 215) {
+            heater.coolDown();
+        } else if (temperatureSensor.getTemp() >= 250){
+            heater.setHeaterStatus(false);
+            setAllLEDsToFalse();
+            ledBank.setErrorLED(true);
+            timer.reset();
+        }
+    }
+
+    public static void setAllLEDsToFalse(){
+        ledBank.setErrorLED(false);
+        ledBank.setBrewLED(false);
+        ledBank.setReservoirLED(false);
+        ledBank.setVoltageLED(false);
+        ledBank.setHeatingLED(false);
     }
 
 
@@ -204,7 +241,7 @@ public class Main {
 
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
-        //////// NOT FUTURE SOCKET SECTION ////////
+        //////// NOT FUTURE SOCKET SECTION //////// 1 4 3 2 2
 
 
 
