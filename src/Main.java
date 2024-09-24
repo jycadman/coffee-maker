@@ -9,11 +9,30 @@ import java.util.Scanner;
 public class Main {
 
 
-    static final Scanner scanner = new Scanner(System.in);
+    static final Scanner scanner = new Scanner(System.in);BrewButton brewButton = new BrewButton();
+    HeatingButton heatingButton;
+    static PowerButton powerButton;
+    TemperatureSensor temperatureSensor;
+    static VoltageSensor voltageSensor;
+    static ReservoirSensor reservoirSensor;
+    static LidSensor lidSensor;
+    static CarafeSensor carafeSensor;
+    static LEDBank ledBank;
+    Heater heater;
+    Timer timer;
     static private ServerSocket serverSocket;
     static private Socket mySocket = null;
 
     public static void standBy() {
+
+        if(voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.get() && lidSensor.get()) {
+            ledBank.setErrorLED(false);
+            ledBank.setBrewLED(false);
+            ledBank.setReservoirLED(false);
+            ledBank.setVoltageLED(true);
+            ledBank.setHeatingLED(false);
+        } else
+            ledBank.setErrorLED(true);
 
     }
 
@@ -88,7 +107,6 @@ public class Main {
                 lidStatus = scanner.nextBoolean();
                 System.out.print("Is the carafe in place? (true/false): ");
                 carafeStatus = scanner.nextBoolean();
-
 
                 // Process the collected information
                 System.out.println("\nCoffee Machine Information:");

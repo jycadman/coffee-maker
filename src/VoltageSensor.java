@@ -6,6 +6,13 @@ public class VoltageSensor {
     public void setVoltage(int input){
         voltage = input;
     }
+    public int getVoltage(){
+        return voltage;
+    }
+
+    public boolean isVoltageCorrect(){
+        return 110 < voltage && voltage < 130;
+    }
 
     public void checkVoltage(boolean correctVoltage) {
         if (correctVoltage) {

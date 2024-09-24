@@ -14,14 +14,14 @@ public class CarafeSensor {
         isInPlace = false;
     }
 
-    public boolean getIsInPlace(){
+    public boolean get(){
         return isInPlace;
     }
 
     public static void main(String[] args){
         CarafeSensor test = new CarafeSensor();
-        System.out.println(test.getIsInPlace());
+        System.out.println(test.get());
         test.setCarafeIn();
-        System.out.println(test.getIsInPlace());
+        System.out.println(test.get());
     }
 }

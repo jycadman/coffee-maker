@@ -17,6 +17,10 @@ public class LidSensor {
         isClosed = input;
     }
 
+    public boolean get(){
+        return isClosed;
+    }
+
     public boolean isClosed() {
         return isClosed;
     }
