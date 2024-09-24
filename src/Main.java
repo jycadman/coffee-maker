@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.NoSuchElementException;
@@ -160,7 +161,8 @@ public class Main {
         Timer timer = new Timer();
 
         //////// SOCKET SECTION ////////
-        BufferedReader in = null;
+        BufferedReader reader = null; // Use this to read from the terminal.
+        PrintWriter writer = null; // Use this to write to the terminal.
         try {
             serverSocket = new ServerSocket(5000);
 
@@ -177,7 +179,8 @@ public class Main {
         }
 
         try {
-            in = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
+            writer = new PrintWriter(mySocket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,12 +188,14 @@ public class Main {
         // For testing that the socket works
         while(true){
             try {
-                String fromSocket = in.readLine();
+                String fromSocket = reader.readLine();
                 if (fromSocket.equals("quit")){
                     break;
                 }
 
                 System.out.println(fromSocket);
+
+                writer.println(scanner.nextLine());
             } catch (IOException e) {
                 e.printStackTrace();
             }
