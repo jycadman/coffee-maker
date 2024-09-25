@@ -269,39 +269,50 @@ public class Main {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    
+                    // These handle the commands sent across the socket
+                    // they change the devices.
                     switch(next){
                         case "BBP": // Brew Button Pressed
                             System.out.println("Brew button pressed");
+                            brewButton.negate();
                             break;
                         case "HBP": // Heating Button Pressed
                             System.out.println("Heating button pressed");
+                            heatingButton.negate();
                             break;
                         case "PBP": // Power Button Pressed
                             System.out.println("Power button pressed");
+                            powerButton.negate();
                             break;
                         case "CST": // CarafeSensor True;
                             System.out.println("Carafe is in place");
+                            carafeSensor.set(true);
                             break;
                         case "CSF": // CarafeSensor False;
                             System.out.println("Carafe is not In place");
+                            carafeSensor.set(false);
                             break;
                         case "LST": // LidSensor True;
                             System.out.println("Lid is down");
+                            lidSensor.set(true);
                             break;
                         case "LSF": // LidSensor False
                             System.out.println("Lid is up");
+                            lidSensor.set(false);
                             break;
                         case "RST": // ReservoirSensor True
                             System.out.println("There is water");
+                            reservoirSensor.set(true);
                             break;
                         case "RSF": // ReservoirSensor False
                             System.out.println("There is not water");
+                            reservoirSensor.set(false);
                             break;
-                        case "TSS": // Temp Sensor Set
+                        case "TSS": // Temp Sensor Ser
                             try {
                                 String num = reader.readLine();
                                 System.out.println("Setting temperature to " + num);
+                                temperatureSensor.setTemp(Integer.parseInt(num));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -310,6 +321,7 @@ public class Main {
                             try {
                                 String num = reader.readLine();
                                 System.out.println("Setting voltage to " + num);
+                                voltageSensor.setVoltage(Integer.parseInt(num));
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
@@ -320,6 +332,7 @@ public class Main {
                 }
             }
         });
+        //perserThread.start();
 
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
