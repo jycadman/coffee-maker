@@ -18,12 +18,4 @@ public class BrewButton {
         return isOn;
     }
 
-    public static void main(String[] Args){
-        BrewButton test = new BrewButton();
-        System.out.println(test.getStatus());
-        test.turnOn();
-        System.out.println(test.getStatus());
-
-    }
-
 }
