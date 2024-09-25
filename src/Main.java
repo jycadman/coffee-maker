@@ -45,6 +45,16 @@ public class Main {
 
     public static void brewing(){
         brewButton.negate();
+        if (carafeSensor.get() & reservoirSensor.hasWater()) {
+            heater.heatUp();
+            ledBank.setBrewLED(true);
+            timer.reset();
+            while (heater.getHeatTemperature() < 202) {
+                System.out.println("waiting for brewing to reach adequate temperature");
+            }
+            brewButton.turnOn();
+            System.out.println("Brewing: " + brewButton.getStatus());
+        }
 
     }
 
