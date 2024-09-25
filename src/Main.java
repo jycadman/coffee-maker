@@ -16,8 +16,10 @@ public class Main {
     static LEDBank ledBank;
     static Heater heater;
     static Timer timer;
-    static private ServerSocket serverSocket;
-    static private Socket mySocket = null;
+    static ServerSocket serverSocket;
+    static Socket mySocket = null;
+    static BufferedReader reader = null; // Use this to read from the terminal.
+    static PrintWriter writer = null; // Use this to write to the terminal.
 
 
     public static void standBy() {
@@ -225,10 +227,9 @@ public class Main {
         Timer timer = new Timer();
 
 
-        /*
+
         //////// SOCKET SECTION ////////
-        BufferedReader reader = null; // Use this to read from the terminal.
-        PrintWriter writer = null; // Use this to write to the terminal.
+        // Sets server socket
         try {
             serverSocket = new ServerSocket(5000);
 
@@ -236,6 +237,7 @@ public class Main {
             e.printStackTrace();
         }
 
+        // Connects to socket
         try {
             System.out.println("waiting for socket connection...");
             mySocket = serverSocket.accept();
@@ -244,6 +246,7 @@ public class Main {
             e.printStackTrace();
         }
 
+        // Sets up reader and writer
         try {
             reader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
             writer = new PrintWriter(mySocket.getOutputStream(), true);
@@ -251,23 +254,71 @@ public class Main {
             e.printStackTrace();
         }
 
-        // For testing that the socket works
-        while(true){
-            try {
-                String fromSocket = reader.readLine();
-                if (fromSocket.equals("quit")){
-                    break;
+        // Parses input from socket.
+        Thread perserThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("\nSocket thread running");
+                while(true) {
+                    String next = null;
+                    try {
+                        next = reader.readLine();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    
+                    switch(next){
+                        case "BBP": // Brew Button Pressed
+                            System.out.println("Brew button pressed");
+                            break;
+                        case "HBP": // Heating Button Pressed
+                            System.out.println("Heating button pressed");
+                            break;
+                        case "PBP": // Power Button Pressed
+                            System.out.println("Power button pressed");
+                            break;
+                        case "CST": // CarafeSensor True;
+                            System.out.println("Carafe is in place");
+                            break;
+                        case "CSF": // CarafeSensor False;
+                            System.out.println("Carafe is not In place");
+                            break;
+                        case "LST": // LidSensor True;
+                            System.out.println("Lid is down");
+                            break;
+                        case "LSF": // LidSensor False
+                            System.out.println("Lid is up");
+                            break;
+                        case "RST": // ReservoirSensor True
+                            System.out.println("There is water");
+                            break;
+                        case "RSF": // ReservoirSensor False
+                            System.out.println("There is not water");
+                            break;
+                        case "TSS": // Temp Sensor Set
+                            try {
+                                String num = reader.readLine();
+                                System.out.println("Setting temperature to " + num);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        case "VSS": // Voltage sensor set
+                            try {
+                                String num = reader.readLine();
+                                System.out.println("Setting voltage to " + num);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                        default:
+                            System.out.println("Unknown command");
+                    }
                 }
-
-                System.out.println(fromSocket);
-
-                writer.println(scanner.nextLine());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
+        });
+        perserThread.start();
         /////// END SOCKET SECTION /////////
-         */
 
 
         //////// NOT FUTURE SOCKET SECTION ////////
