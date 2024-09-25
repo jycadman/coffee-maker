@@ -5,14 +5,7 @@ public class CarafeSensor {
         isInPlace = false;
     }
 
-    public void setCarafeIn(){
-        isInPlace = true;
-    }
     public void set(boolean input){ isInPlace = input;}
-
-    public void removeCarafeOut(){
-        isInPlace = false;
-    }
 
     public boolean get(){
         return isInPlace;
@@ -20,8 +13,6 @@ public class CarafeSensor {
 
     public static void main(String[] args){
         CarafeSensor test = new CarafeSensor();
-        System.out.println(test.get());
-        test.setCarafeIn();
         System.out.println(test.get());
     }
 }

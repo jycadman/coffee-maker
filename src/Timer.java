@@ -19,6 +19,7 @@ public class Timer {
         return (timeStart + timeSet) < System.currentTimeMillis();
     }
 
+
     /*
     Example: Timer to check if four seconds have passed.
 

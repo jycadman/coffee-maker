@@ -19,26 +19,13 @@ public class Heater {
     }
 
     public void heatUp() {
-        // Heater has to be shut off in main will run forever here while increasing unless we use commented out code
         while (heaterStatus) {
             heatTemperature += incDecAmount;
             waitOneSecond();
         }
-        // Automatically turn off if overheating Turn off after devbugging
         if (heatTemperature >= overHeatTemp) {
             System.out.println("Heater automatically turned off due to overheating!");
         }
-        /*
-        while (heaterStatus && heatTemperature < overHeatTemp) { // Remove 250 after debugging
-            heatTemperature += incDecAmount;
-            waitOneSecond();
-        }
-        // Automatically turn off if overheating Turn off after devbugging
-        if (heatTemperature >= overHeatTemp) {
-            System.out.println("Heater automatically turned off due to overheating!");
-        }
-
-         */
     }
 
     public void coolDown() {

@@ -46,13 +46,15 @@ public class Main {
     public static void brewing(){
         // Temp sensor, reservoir sensor, lid sensor ,carafe sensor, led bank, heater, timer
         brewButton.negate();
-        if (carafeSensor.get() & reservoirSensor.hasWater()) {
+        if (carafeSensor.get() & reservoirSensor.hasWater() & lidSensor.get()) {
             heater.heatUp();
             ledBank.setBrewLED(true);
             timer.reset();
+
             while (heater.getHeatTemperature() < 202) {
                 System.out.println("waiting for brewing to reach adequate temperature");
             }
+
             brewButton.turnOn();
             System.out.println("Brewing: " + brewButton.getStatus());
         }
@@ -70,19 +72,22 @@ public class Main {
             ledBank.setErrorLED(true);
             System.out.print("\n Error State in Heating, Talk with group on what to do");
         }
+
         ledBank.setHeatingLED(true);
-        if (temperatureSensor.getTemp() < 215) {
-            ledBank.getHeatingLED();
-            // Heat up heating element
-            timer.set(15);
-            heater.heatUp();
-        } else if (temperatureSensor.getTemp() < 250 && temperatureSensor.getTemp() > 215) {
-            heater.coolDown();
-        } else if (temperatureSensor.getTemp() >= 250) {
-            heater.setHeaterStatus(false);
-            setAllLEDsToFalse();
-            ledBank.setErrorLED(true);
-            timer.reset();
+        timer.set(15);
+
+        // While the timer isnt finished, continue heating.  Need some way to get an interupt if a button is pressed
+        while(timer.timeout()){
+            if(temperatureSensor.getTemp() < 215){
+                heater.heatUp();
+            } else if( temperatureSensor.getTemp() < 250 && temperatureSensor.getTemp() > 215){
+                heater.coolDown();
+            } else if(temperatureSensor.getTemp() >= 250){
+                heater.setHeaterStatus(false);
+                setAllLEDsToFalse();
+                ledBank.setErrorLED(true);
+                timer.reset();
+            }
         }
     }
 
@@ -315,31 +320,6 @@ public class Main {
                 }
             }
         });
-
-        /*
-
-
-
-         boolean pressed = false;
-        boolean brewButtonState = brewButton.getStatus();
-        boolean heatingButtonState = heatingButton.getStatus();
-        boolean powerButtonState = powerButton.get();
-
-        while (!pressed) {
-            if (brewButtonState != brewButton.getStatus() || heatingButtonState != heatingButton.getStatus()
-                    || powerButtonState != powerButton.get()) {
-                pressed = true;
-            }
-            else {
-
-            }
-
-
-        perserThread.start();
-        /////// END SOCKET SECTION /////////
-
-
- */
 
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time

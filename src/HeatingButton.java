@@ -20,11 +20,4 @@ public class HeatingButton {
         return isOn;
     }
 
-    public static void main(String[] args){
-        HeatingButton test = new HeatingButton();
-        System.out.println(test.getStatus());
-        test.turnOn();
-        System.out.println(test.getStatus());
-    }
-
 }
