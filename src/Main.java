@@ -24,7 +24,8 @@ public class Main {
     static Socket mySocket = null;
     static BufferedReader reader = null; // Use this to read from the terminal.
     static PrintWriter writer = null; // Use this to write to the terminal.
-    int optimalWaterTemp = 212;
+    static int optimalWaterTemp = 215;
+    static int maxWaterTemp = 250;
 
 
     public static void standBy() {
@@ -46,15 +47,12 @@ public class Main {
     public static void brewing(){
         // Temp sensor, reservoir sensor, lid sensor ,carafe sensor, led bank, heater, timer
         brewButton.negate();
+
         if (carafeSensor.get() & reservoirSensor.hasWater() & lidSensor.get()) {
-            heater.heatUp();
+            heater.setHeaterStatus(true); //  Heats up
             ledBank.setBrewLED(true);
+            heater.heatUp();
             timer.reset();
-
-            while (heater.getHeatTemperature() < 202) {
-                System.out.println("waiting for brewing to reach adequate temperature");
-            }
-
             brewButton.turnOn();
             System.out.println("Brewing: " + brewButton.getStatus());
         }
@@ -65,7 +63,7 @@ public class Main {
     public static void heating() {
         // Done heating button, temp sensor, carafe sensor, led bank, heater, timer
         heatingButton.negate();
-
+        System.out.println("In heating() Heating temp: " + heater.getHeatTemperature());
         // Basic check for carafe
         if (!carafeSensor.get()) {
             setAllLEDsToFalse(); // Set all LEDS to off
@@ -74,20 +72,18 @@ public class Main {
         }
 
         ledBank.setHeatingLED(true);
-        timer.set(15);
 
-        // While the timer isnt finished, continue heating.  Need some way to get an interupt if a button is pressed
-        while(timer.timeout()){
-            if(temperatureSensor.getTemp() < 215){
-                heater.heatUp();
-            } else if( temperatureSensor.getTemp() < 250 && temperatureSensor.getTemp() > 215){
-                heater.coolDown();
-            } else if(temperatureSensor.getTemp() >= 250){
-                heater.setHeaterStatus(false);
-                setAllLEDsToFalse();
-                ledBank.setErrorLED(true);
-                timer.reset();
-            }
+        if(temperatureSensor.getTemp() < optimalWaterTemp){
+            heater.heatUp();
+            timer.set(15);
+        } else if( temperatureSensor.getTemp() < maxWaterTemp && temperatureSensor.getTemp() > optimalWaterTemp){
+            heater.coolDown();
+            timer.set(15);
+        } else if(temperatureSensor.getTemp() >= maxWaterTemp){
+            heater.setHeaterStatus(false);
+            setAllLEDsToFalse();
+            ledBank.setErrorLED(true);
+            timer.reset();
         }
     }
 
@@ -125,7 +121,7 @@ public class Main {
 
 
     private static void choiceHandler(String input){// input = "brew" || "power" || "heating"
-        System.out.println("Word is: " + input);
+        //System.out.println("Word is: " + input);
         switch (input) {
             case "brew" -> {
                 System.out.println("Brew button pressed!");
@@ -230,7 +226,7 @@ public class Main {
         Main.timer = timer;
 
 
-
+/*
         //////// SOCKET SECTION ////////
         // Sets server socket
         try {
@@ -334,6 +330,7 @@ public class Main {
         });
         //perserThread.start();
 
+        */
         //////// NOT FUTURE SOCKET SECTION ////////
         firstUserPromptForPowerButton(); // User clicks the power button the first time
         //////// NOT FUTURE SOCKET SECTION //////// 1 4 3 2 2

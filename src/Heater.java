@@ -1,15 +1,15 @@
 public class Heater {
     private int heatTemperature;
     private boolean heaterStatus;
-    private final int roomTemp = 72;
-    private final int overHeatTemp;
-    private final int incDecAmount;
-    private final int threadSleepTime;
+    private int roomTemp = 72;
+    private int overHeatTemp;
+    private int incDecAmount;
+    private int threadSleepTime;
     public Heater(){
         heaterStatus = false;
         heatTemperature = roomTemp;
         overHeatTemp = 250;
-        incDecAmount = 50;
+        incDecAmount = 10;
         threadSleepTime = 1000;
 
     }
@@ -19,12 +19,13 @@ public class Heater {
     }
 
     public void heatUp() {
-        while (heaterStatus) {
+        while (heaterStatus && heatTemperature < 215) {
             heatTemperature += incDecAmount;
+            System.out.println("Heater Temp: " + heatTemperature);
             waitOneSecond();
-        }
-        if (heatTemperature >= overHeatTemp) {
-            System.out.println("Heater automatically turned off due to overheating!");
+            if (heatTemperature >= overHeatTemp) {
+                System.out.println("Heater automatically turned off due to overheating!");
+            }
         }
     }
 
