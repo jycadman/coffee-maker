@@ -1,10 +1,14 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Heater {
-    private int heatTemperature;
+    protected int heatTemperature;
     private boolean heaterStatus;
     private int roomTemp = 72;
     private int overHeatTemp;
     private int incDecAmount;
     private int threadSleepTime;
+
     public Heater(){
         heaterStatus = false;
         heatTemperature = roomTemp;

@@ -1,10 +1,22 @@
-public class TemperatureSensor {
+public class TemperatureSensor extends Heater {
     private int currentTemp;
 
     public TemperatureSensor(){
-        currentTemp = 72;
+        super();
     }
 
+    @Override
+    public void heatUp(){
+        System.out.println("Temp Sens: " + currentTemp);
+        super.heatUp();;
+        setTemp(getHeatTemperature());
+    }
+
+    @Override
+    public void coolDown(){
+        super.coolDown();
+        setTemp(getHeatTemperature());
+    }
     public void setTemp(int input){
         currentTemp = input;
     }
