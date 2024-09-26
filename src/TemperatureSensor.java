@@ -8,7 +8,7 @@ public class TemperatureSensor extends Heater {
     @Override
     public void heatUp(){
         System.out.println("Temp Sens: " + currentTemp);
-        super.heatUp();;
+        super.heatUp();
         setTemp(getHeatTemperature());
     }
 
