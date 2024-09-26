@@ -30,26 +30,22 @@ public class Main {
 
     public static void standBy() {
         // voltage sensor, resevoir sensor, lid sensor, carafe sensor, led bank
-        powerButton.negate();
+        //powerButton.negate();
         setAllLEDsToFalse();
         if (powerButton.get()) {
             if (voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.get() && lidSensor.get()) {
                 ledBank.setVoltageLED(true);
-            } else {
-                ledBank.setErrorLED(true);
-            }
-        } else {
-            System.out.print("Power down Appliance??  Talk with group on what to do");
-        }
+            } else {ledBank.setErrorLED(true);}
+        } else { System.out.print("Power down Appliance??  Talk with group on what to do");}
     }
 
 
     public static void brewing(){
         // Temp sensor, reservoir sensor, lid sensor ,carafe sensor, led bank, heater, timer
-        brewButton.negate();
+        //brewButton.negate();
 
         if (carafeSensor.get() & reservoirSensor.hasWater() & lidSensor.get()) {
-            heater.setHeaterStatus(true); //  Heats up
+            heater.setHeaterStatus(true); // Heats up
             ledBank.setBrewLED(true);
             heater.heatUp();
             timer.reset();
@@ -351,7 +347,7 @@ public class Main {
         // Set sensor values from coffeeInfo object Change to socket info later
         reservoirSensor.set((boolean)coffeeInfo[0]);
         voltageSensor.setVoltage((int) coffeeInfo[1]);
-        temperatureSensor.setTemp((int) coffeeInfo[2]);
+        heater.set((int) coffeeInfo[2]);
         lidSensor.set((boolean) coffeeInfo[3]);
         carafeSensor.set((boolean) coffeeInfo[4]);
         /////// END FUTURE SOCKET SECTION /////////
