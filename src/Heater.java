@@ -33,6 +33,10 @@ public class Heater {
         }
     }
 
+    public void set(int input){
+        heatTemperature = input;
+    }
+
     public void coolDown() {
         while (!heaterStatus && heatTemperature > roomTemp) {
             heatTemperature -= incDecAmount;

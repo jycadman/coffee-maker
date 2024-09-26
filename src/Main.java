@@ -346,7 +346,7 @@ public class Main {
         // Set sensor values from coffeeInfo object Change to socket info later
         reservoirSensor.set((boolean)coffeeInfo[0]);
         voltageSensor.setVoltage((int) coffeeInfo[1]);
-        temperatureSensor.setTemp((int) coffeeInfo[2]);
+        heater.set((int) coffeeInfo[2]);
         lidSensor.set((boolean) coffeeInfo[3]);
         carafeSensor.set((boolean) coffeeInfo[4]);
         /////// END FUTURE SOCKET SECTION /////////
