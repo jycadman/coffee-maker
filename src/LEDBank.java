@@ -1,50 +1,37 @@
 public class LEDBank {
-    private boolean heatingLED;
-    private boolean reservoirLED;
-    private boolean voltageLED;
-    private boolean errorLED;
-    private boolean brewLED;
-
-    public LEDBank(){
-        heatingLED = false;
-        reservoirLED = false;
-        voltageLED = false;
-        errorLED = false;
-        brewLED = false;
-    }
     // Heating
-    public void setHeatingLED(boolean input){
-        heatingLED = input;
+    public String heatingLEDOn(){
+        return "PLT";
     }
-    public boolean getHeatingLED(){
-        return heatingLED;
+    public String heatingLEDOff(){
+        return "PLF";
     }
     // Reservoir
-    public void setReservoirLED(boolean input){
-        reservoirLED = input;
+    public String reservoirLEDOn(){
+        return "BLT";
     }
-    public boolean getReservoirLED(){
-        return reservoirLED;
+    public String reservoirLEDOff(){
+        return "BLF";
     }
     // Voltage
-    public void setVoltageLED(boolean input){
-        voltageLED = input;
+    public String voltageLEDOn(){
+        return "YLT";
     }
-    public boolean getVoltageLED(){
-        return voltageLED;
+    public String voltageLEDOff(){
+        return "YLF";
     }
     // Error
-    public void setErrorLED(boolean input){
-        errorLED = input;
+    public String errorLEDOn(){
+        return "RLT";
     }
-    public boolean getErrorLED(){
-        return errorLED;
+    public String errorLEDOff(){
+        return "RLF";
     }
     // BREW
-    public void setBrewLED(boolean input){
-        brewLED = input;
+    public String brewEDOn(){
+        return "GLT";
     }
-    public boolean getBrewLED(){
-        return brewLED;
+    public String brewEDOff(){
+        return "GLF";
     }
 }

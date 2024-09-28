@@ -21,12 +21,4 @@ public class PowerButton {
     void turnOff() {
         coffeeMachineOn = false;
     }
-
-    public static void main(String[] args){
-        PowerButton powerbutton = new PowerButton();
-        System.out.print(powerbutton.get());
-        powerbutton.negate();
-        System.out.print(powerbutton.get());
-    }
-
 }

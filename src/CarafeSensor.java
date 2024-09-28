@@ -7,12 +7,7 @@ public class CarafeSensor {
 
     public void set(boolean input){ isInPlace = input;}
 
-    public boolean get(){
+    public boolean carafeInPlace(){
         return isInPlace;
-    }
-
-    public static void main(String[] args){
-        CarafeSensor test = new CarafeSensor();
-        System.out.println(test.get());
     }
 }

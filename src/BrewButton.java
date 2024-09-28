@@ -14,7 +14,7 @@ public class BrewButton {
         isOn = true;
     }
 
-    public boolean getStatus(){
+    public boolean getStatus(){;
         return isOn;
     }
 

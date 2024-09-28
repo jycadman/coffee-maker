@@ -13,28 +13,8 @@ public class LidSensor {
         isClosed = false;
     }
 
-    public void set(boolean input){
-        isClosed = input;
-    }
-
-    public boolean get(){
-        return isClosed;
-    }
-
     public boolean isClosed() {
         return isClosed;
     }
 
-    public static void main(String[] args) {
-        LidSensor ls = new LidSensor();
-
-        // Assume lid is closed on start-up
-        ls.close();
-
-        if (ls.isClosed()) {
-            System.out.println("Coffee Maker Lid is Closed.");
-        } else {
-            System.out.println("Coffee Maker Lid is Open.");
-        }
-    }
 }

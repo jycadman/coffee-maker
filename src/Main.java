@@ -4,7 +4,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -29,168 +28,91 @@ public class Main {
 
 
     public static void standBy() {
+        System.out.println("in standBy");
         // voltage sensor, resevoir sensor, lid sensor, carafe sensor, led bank
         //powerButton.negate();
         setAllLEDsToFalse();
-        if (powerButton.get()) {
-            if (voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.get() && lidSensor.get()) {
-                ledBank.setVoltageLED(true);
-            } else {ledBank.setErrorLED(true);}
-        } else { System.out.print("Power down Appliance??  Talk with group on what to do");}
+        if (voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.carafeInPlace() && lidSensor.isClosed()) {
+            writer.println(ledBank.voltageLEDOn());
+        } else {writer.println(ledBank.errorLEDOn());}
     }
 
 
     public static void brewing(){
+        System.out.println("in brewing");
         // Temp sensor, reservoir sensor, lid sensor ,carafe sensor, led bank, heater, timer
         //brewButton.negate();
 
-        if (carafeSensor.get() & reservoirSensor.hasWater() & lidSensor.get()) {
-            heater.setHeaterStatus(true); // Heats up
-            ledBank.setBrewLED(true);
-            heater.heatUp();
+        if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
+            writer.println(heater.heatUp());
+            writer.println(ledBank.brewEDOn());
+            timer.set(5000); // Five seconds
             timer.reset();
-            brewButton.turnOn();
-            System.out.println("Brewing: " + brewButton.getStatus());
-        }
 
+            System.out.println("Brewing");
+
+            while (!timer.timeout() && !brewButton.getStatus()){}
+
+            if (timer.timeout()) {
+                System.out.println("Timed out");
+            }
+
+            if(brewButton.getStatus()){
+                brewButton.turnOff();
+            }
+
+            System.out.println("Brewing Done");
+            writer.println("CI1");
+        } else {
+            System.out.println("Failed to Brew");
+        }
     }
 
 
     public static void heating() {
+        System.out.println("in heating");
         // Done heating button, temp sensor, carafe sensor, led bank, heater, timer
-        heatingButton.negate();
-        System.out.println("In heating() Heating temp: " + heater.getHeatTemperature());
         // Basic check for carafe
-        if (!carafeSensor.get()) {
+        if (!carafeSensor.carafeInPlace()) {
             setAllLEDsToFalse(); // Set all LEDS to off
-            ledBank.setErrorLED(true);
-            System.out.print("\n Error State in Heating, Talk with group on what to do");
+            writer.println(ledBank.errorLEDOn());
+            System.out.print("\n Error State in Heating, Talk with group on what to do\n");
+            return;
         }
 
-        ledBank.setHeatingLED(true);
+        writer.println(ledBank.heatingLEDOn());
+        writer.println(heater.heatUp());
 
-        if(temperatureSensor.getTemp() < optimalWaterTemp){
-            heater.heatUp();
-            timer.set(15);
-        } else if( temperatureSensor.getTemp() < maxWaterTemp && temperatureSensor.getTemp() > optimalWaterTemp){
-            heater.coolDown();
-            timer.set(15);
-        } else if(temperatureSensor.getTemp() >= maxWaterTemp){
-            heater.setHeaterStatus(false);
-            setAllLEDsToFalse();
-            ledBank.setErrorLED(true);
-            timer.reset();
+        timer.set(15000);
+        timer.reset();
+
+        while (!timer.timeout() && !heatingButton.getStatus()){
+            if (temperatureSensor.getTemp() > optimalWaterTemp + 20 || temperatureSensor.getTemp() < optimalWaterTemp - 20 ){
+                writer.println(ledBank.heatingLEDOff());
+                writer.println(heater.coolDown());
+                writer.println(ledBank.errorLEDOn());
+                break;
+            }
         }
+
+        if (timer.timeout()) {
+            System.out.println("Timed out");
+        }
+
+        if (heatingButton.getStatus()){
+            heatingButton.turnOff();
+        }
+
+        writer.println(heater.coolDown());
     }
 
 
     public static void setAllLEDsToFalse(){
-        ledBank.setErrorLED(false);
-        ledBank.setBrewLED(false);
-        ledBank.setReservoirLED(false);
-        ledBank.setVoltageLED(false);
-        ledBank.setHeatingLED(false);
-    }
-
-
-    public static String getUserInput() {
-        //Scanner scanner = new Scanner(System.in);
-        System.out.println("Choices: brew button, heating button, power button");
-        while (true) {
-            System.out.print("Enter your choice: ");
-            String userChoice = scanner.nextLine().toLowerCase();
-            switch (userChoice) {
-                case "brew button":
-                    //scanner.close();
-                    return "brew";
-                case "heating button":
-                    //scanner.close();
-                    return "heating";
-                case "power button":
-                    //scanner.close();
-                    return "power";
-                default:
-                    System.out.println("Invalid choice. Please select brew button, heating button, or power button.");
-            }
-        }
-    }
-
-
-    private static void choiceHandler(String input){// input = "brew" || "power" || "heating"
-        //System.out.println("Word is: " + input);
-        switch (input) {
-            case "brew" -> {
-                System.out.println("Brew button pressed!");
-                brewing();
-            }
-            case "heating" -> {
-                System.out.println("Heating button activated!");
-                heating();
-            }
-            case "power" -> {
-                System.out.println("Power button toggled!");
-                standBy();
-            }
-            default -> System.out.print("ERROR In ChoiceHandler SET ERROR LED");
-        }
-    }
-
-
-    private static Object[] collectCoffeeMachineInfo() {
-        //Scanner scanner = new Scanner(System.in);
-        boolean waterStatus;
-        int voltage;
-        int temperature;
-        boolean lidStatus;
-        boolean carafeStatus;
-        while (true) {
-            try {
-
-                System.out.print("Does the reservoir contain water? (true/false): ");
-                waterStatus = scanner.nextBoolean();
-                System.out.print("What is the current voltage? (in volts): ");
-                voltage = scanner.nextInt();
-                System.out.print("What is the current temperature? (in Fahrenheit): ");
-                temperature = scanner.nextInt();
-                System.out.print("Is the lid closed? (true/false): ");
-                lidStatus = scanner.nextBoolean();
-                System.out.print("Is the carafe in place? (true/false): ");
-                carafeStatus = scanner.nextBoolean();
-
-                // Process the collected information
-                System.out.println("\nCoffee Machine Information:");
-                System.out.println("Water status: " + waterStatus);
-                System.out.println("Voltage: " + voltage + " V");
-                System.out.println("Temperature: " + temperature + "°F");
-                System.out.println("Lid status: " + lidStatus);
-                System.out.println("Carafe status: " + carafeStatus);
-
-                // Return the collected data as an array
-                return new Object[]{waterStatus, voltage, temperature, lidStatus, carafeStatus};
-                //scanner.close();
-            } catch (NoSuchElementException e) {
-                System.out.println("Invalid input. Please try again.");
-                scanner.nextLine();
-            }
-        }
-    }
-
-
-    public static void firstUserPromptForPowerButton() {
-        //Scanner scanner = new Scanner(System.in);
-        System.out.println("Welcome to the Java Coffee Machine!");
-        System.out.println("Please press the power button.");
-        while (true) {
-            System.out.print("Enter your choice (power button): ");
-            String userChoice = scanner.nextLine().toLowerCase();
-            if (userChoice.equals("power button")) {
-                // Close Scanner
-                //scanner.close();
-                return;
-            } else {
-                System.out.println("Invalid choice. Please select the power button.");
-            }
-        }
+        writer.println(ledBank.errorLEDOff());
+        writer.println(ledBank.brewEDOff());
+        writer.println(ledBank.reservoirLEDOff());
+        writer.println(ledBank.voltageLEDOff());
+        writer.println(ledBank.heatingLEDOff());
     }
 
 
@@ -221,8 +143,6 @@ public class Main {
         Main.heater = heater;
         Main.timer = timer;
 
-
-/*
         //////// SOCKET SECTION ////////
         // Sets up a server socket on port 5000
         try {
@@ -253,8 +173,9 @@ public class Main {
         Thread perserThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                boolean running = true;
                 System.out.println("\nSocket thread running");
-                while(true) {
+                while(running) {
                     String next = null;
                     try {
                         next = reader.readLine();
@@ -276,6 +197,7 @@ public class Main {
                         case "PBP": // Power Button Pressed
                             System.out.println("Power button pressed");
                             powerButton.negate();
+                            running = false;
                             break;
                         case "CST": // CarafeSensor True;
                             System.out.println("Carafe is in place");
@@ -287,21 +209,21 @@ public class Main {
                             break;
                         case "LST": // LidSensor True;
                             System.out.println("Lid is down");
-                            lidSensor.set(true);
+                            lidSensor.close();
                             break;
                         case "LSF": // LidSensor False
                             System.out.println("Lid is up");
-                            lidSensor.set(false);
+                            lidSensor.open();
                             break;
                         case "RST": // ReservoirSensor True
                             System.out.println("There is water");
-                            reservoirSensor.set(true);
+                            reservoirSensor.fill();
                             break;
                         case "RSF": // ReservoirSensor False
                             System.out.println("There is not water");
-                            reservoirSensor.set(false);
+                            reservoirSensor.empty();
                             break;
-                        case "TSS": // Temp Sensor Ser
+                        case "TSS": // Temp Sensor Set
                             try {
                                 String num = reader.readLine();
                                 System.out.println("Setting temperature to " + num);
@@ -320,39 +242,34 @@ public class Main {
                             }
                             break;
                         default:
-                            System.out.println("Unknown command");
+                            System.out.println("Unknown command " + next);
                     }
                 }
             }
         });
-        //perserThread.start();
+        perserThread.start();
 
-        */
-        //////// NOT FUTURE SOCKET SECTION ////////
-        firstUserPromptForPowerButton(); // User clicks the power button the first time
-        //////// NOT FUTURE SOCKET SECTION //////// 1 4 3 2 2
+        standBy();
+        while(!powerButton.get()){
+            // I don't know why the print is needed, but errors happen without it.
+            System.out.print("");
+            if (brewButton.getStatus()){
+                brewButton.negate();
+                brewing();
+            }
+            else if (heatingButton.getStatus()) {
+                heatingButton.negate();
+                heating();
+            }
+        }
 
+        //////// SOCKET SECTION ////////
+        try {
+            mySocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //////// END SOCKET SECTION ////////
 
-        powerButton.turnOn(); // Turn the power button on the first time, check first power button push with socket
-
-
-
-        //////// NOT FUTURE SOCKET SECTION ////////
-        //Collect information for the sensors from user(will be from socket later on)
-        Object[] coffeeInfo = collectCoffeeMachineInfo(); // Simulating socket information received from coffee maker Need to send data to main and handle
-        //////// END NOT FUTURE SOCKET SECTION ////////
-
-
-        //////// FUTURE SOCKET SECTION ////////
-        // Set sensor values from coffeeInfo object Change to socket info later
-        reservoirSensor.set((boolean)coffeeInfo[0]);
-        voltageSensor.setVoltage((int) coffeeInfo[1]);
-        heater.set((int) coffeeInfo[2]);
-        lidSensor.set((boolean) coffeeInfo[3]);
-        carafeSensor.set((boolean) coffeeInfo[4]);
-        /////// END FUTURE SOCKET SECTION /////////
-
-
-        choiceHandler(getUserInput()); // getUserInput returns "brew" || "power" || "heating" and choiceHandler will handle
     }
 }

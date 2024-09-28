@@ -40,6 +40,7 @@ public class Terminal {
                     // These are the commands that the coffee maker needs to send
                     // so that the terminal knows it's status.
                     switch (nextCommand) {
+                        // Commands for Carafe
                         case "C00": // Carafe empty
                             System.out.println("Carafe empty");
                             break;
@@ -55,6 +56,8 @@ public class Terminal {
                         case "CI1": // Carafe is full
                             System.out.println("Carafe full");
                             break;
+
+                        // Commands for LEDs
                         case "PLT": // Pink LED on
                             System.out.println("Pink LED on");
                             break;
@@ -85,6 +88,17 @@ public class Terminal {
                         case "RLF": // Red LED off
                             System.out.println("Red LED off");
                             break;
+                        // Commands for devices.
+                        case "HHU": // Heater heat up
+                            System.out.println("heating up");
+                            writer.println("TSS");
+                            writer.println("215");
+                            break;
+                        case "HCD": // Heater cool down
+                            System.out.println("cooling down");
+                            writer.println("TSS");
+                            writer.println("0");
+                            break;
                         default:
                             System.out.println("Unknown command");
                     }
@@ -94,6 +108,8 @@ public class Terminal {
         });
         perserThread.start();
 
+        // Send initial startup commands
+
         // Sends data to the coffee maker with writer.
         while(true){
             next = scanner.nextLine();
@@ -102,8 +118,3 @@ public class Terminal {
         }
     }
 }
-
-/*
-Command List
-
-*/
