@@ -12,6 +12,8 @@ public class Terminal {
         Socket coffeeMaker;
         String next;
 
+        // Connects the socket to the coffee maker and sets up
+        // writer and reader.
         try {
             coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
             writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
@@ -35,6 +37,8 @@ public class Terminal {
                         throw new RuntimeException(e);
                     }
 
+                    // These are the commands that the coffee maker needs to send
+                    // so that the terminal knows it's status.
                     switch (nextCommand) {
                         case "C00": // Carafe empty
                             System.out.println("Carafe empty");
@@ -90,6 +94,7 @@ public class Terminal {
         });
         perserThread.start();
 
+        // Sends data to the coffee maker with writer.
         while(true){
             next = scanner.nextLine();
             System.out.println(next);

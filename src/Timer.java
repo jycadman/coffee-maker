@@ -7,14 +7,17 @@ public class Timer {
         timeStart = System.currentTimeMillis();
     }
 
+    // Resets the timer.
     public void reset(){
         timeStart = System.currentTimeMillis();
     }
 
+    // Sets the time in milliseconds until the timer timeouts.
     public void set(long t){
         timeSet = t;
     }
 
+    // Returns true if timeSet milliseconds of time has past.
     public boolean timeout(){
         return (timeStart + timeSet) < System.currentTimeMillis();
     }

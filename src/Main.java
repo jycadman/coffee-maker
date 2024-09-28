@@ -224,15 +224,14 @@ public class Main {
 
 /*
         //////// SOCKET SECTION ////////
-        // Sets server socket
+        // Sets up a server socket on port 5000
         try {
             serverSocket = new ServerSocket(5000);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        // Connects to socket
+        // Waits for a socket to connect to the coffee machine.
         try {
             System.out.println("waiting for socket connection...");
             mySocket = serverSocket.accept();
@@ -241,7 +240,8 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Sets up reader and writer
+        // Sets up reader and writer. reader is used to get data from the terminal
+        // and writer is used to send it.
         try {
             reader = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
             writer = new PrintWriter(mySocket.getOutputStream(), true);
@@ -249,7 +249,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Parses input from socket.
+        // Parses commands sent from the terminal.
         Thread perserThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -261,8 +261,9 @@ public class Main {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    // These handle the commands sent across the socket
-                    // they change the devices.
+                    // These parse commands sent from the terminal
+                    // and changes the devices. Some commands expect
+                    // an integer to be given as well.
                     switch(next){
                         case "BBP": // Brew Button Pressed
                             System.out.println("Brew button pressed");
