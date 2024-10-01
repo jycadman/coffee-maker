@@ -83,6 +83,6 @@ public class DeviceComponent extends UserControl implements Component{
 
     @Override
     public void sendMessage(){
-        System.out.println(this.getComm());
+        writer.println(this.getComm());
     }
 }

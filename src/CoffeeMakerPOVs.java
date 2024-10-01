@@ -243,7 +243,5 @@ public class CoffeeMakerPOVs extends Application {
             throw new RuntimeException(e);
         }
 
-        System.out.println("Connected");
-
     }
 }
