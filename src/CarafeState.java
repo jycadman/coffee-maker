@@ -1,9 +1,9 @@
 public enum CarafeState {
-    C0("Carafe empty"),
-    C25("Carafe 25%"),
-    C50("Carafe 50%"),
-    C75("Carafe 75%"),
-    C100("Carafe Full");
+    C0("C00"),
+    C25("C25"),
+    C50("C50%"),
+    C75("C75"),
+    C100("CI1");
 
     private final String level;
 
