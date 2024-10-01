@@ -7,38 +7,44 @@
 - Matthew Lloyd Macias
 - William Lopez
 
-### Purpose
-Introduction: Coffee Maker is a program written in Java for CS460 Software Engineering.  This project utilizes different documentation such as Research Design Diagram, a Software Requirements Specification, and a Software Architecture Design.  The primary goal is to provide an interactive experience for the user, simulating the process of brewing coffee from scratch.  With some saftey features to help the user keep their coffee brewing process safe and easy.
+## Project Description
+This project simulates a coffee maker system using Java. It includes various components such as sensors, buttons, and a heating system to replicate the functionality of a real coffee maker.
 
-Documentation: It provides essential information on how to set up, install, and use your project.
+## Key Components
 
-Run the Main class and then the Terminal class to get the socket working correctly.  From there the list of commands will be written below:
-- BBP : Brew button pressed
-- HBP : Heating button pressed
-- PBP : Power button pressed
-- CST : Carafe is in place
-- CSF : Carafe is not in place
-- LST : Lid is down
-- LSF : Lid is up
-- RST : Water in reservoir
-- RSF : No water in reservoir
-- TSS : Setting temperature to (num)
-- VSS : Setting voltage to (num)
+### Main Control System
+The `Main` class serves as the central control system for the coffee maker. It manages the overall operation, including:
+- Initializing all components
+- Handling user input
+- Coordinating between different parts of the system
 
-Type in the terminal side the desired input.
+### Sensors
+- **TemperatureSensor**: Monitors and controls the water temperature
+- **VoltageSensor**: Checks if the voltage is within the correct range
+- **ReservoirSensor**: Detects if there's water in the reservoir
+- **LidSensor**: Checks if the lid is open or closed
+- **CarafeSensor**: Detects if the carafe is in place
 
-Guidance: It helps other developers understand your code and encourages collaboration.
+### Buttons
+- **BrewButton**: Initiates the brewing process
+- **HeatingButton**: Controls the heating element
+- **PowerButton**: Turns the coffee maker on and off
 
-### Content
+### Other Components
+- **Heater**: Manages the heating element of the coffee maker
+- **LEDBank**: Controls the various indicator lights
+- **Timer**: Handles timing operations for brewing and heating
 
-Project Title and Description: Briefly describe what your project does.
+## How to Run
+1. Compile all Java files in the `src` directory.
+2. Run the `Main` class to start the coffee maker simulation.
 
-Installation Instructions: Explain how to set up your project locally.
+## Future Improvements
+- Implement socket communication between the coffee maker and a terminal interface
+- Enhance error handling and edge case scenarios
+- Improve user interface and feedback mechanisms
 
-Usage: Describe how to use your project (commands, examples, etc.).
-
-Contributing Guidelines: If you welcome contributions, outline how others can get involved.
-
-License: Specify the license under which your project is released.
-
-Badges: Optional, but they add a touch of flair (e.g., build status, code coverage)
+## Notes for Developers
+- The project uses a modular approach with separate classes for each component
+- The `Main` class coordinates all operations and should be the focus for system-wide changes
+- Sensor and button classes are designed to be easily extendable for future enhancements
