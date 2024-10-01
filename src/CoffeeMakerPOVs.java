@@ -21,24 +21,26 @@ public class CoffeeMakerPOVs extends Application {
     private POVList currentPOV;
     private final Scene FrontView;
     private final BorderPane FrontPane = new BorderPane();
-    private ImageView[][] FrontArray;
+    private StackPane FrontStack;
     private final Scene LeftView;
     private final BorderPane LeftPane = new BorderPane();
-    private ImageView[][] LeftArray;
+    private StackPane LeftStack;
     private final Scene RightView;
     private final BorderPane RightPane = new BorderPane();
 
-    private ImageView[][] RightArray;
+    private StackPane RightStack;
     private final Scene BackView;
     private final BorderPane BackPane = new BorderPane();
 
-    private ImageView[][] BackArray;
+    private StackPane BackStack;
     private final Scene TopView;
     private final BorderPane TopPane = new BorderPane();
 
-    private ImageView[][] TopArray;
+    private StackPane TopStack;
     private final VBox POVMenu = new VBox();
     private final VBox ErrorMenu = new VBox();
+
+    private MachineState currMState =  MachineState.OFF;
 
     public CoffeeMakerPOVs() {
         makeMenus();
@@ -138,18 +140,35 @@ public class CoffeeMakerPOVs extends Application {
         Image FrontOFF = new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\POV\\Front\\Front.png");
         ImageView FrontPOV = new ImageView();
         FrontPOV.setImage(FrontOFF);
-        StackPane FrontStack = new StackPane();
+        this.FrontStack = new StackPane();
         FrontStack.getChildren().add(FrontPOV);
 
         DeviceComponent PowButton = new DeviceComponent("Power Button", "Provide Power", new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\PowerButton.png"));
 
+        DeviceComponent BrewButton = new DeviceComponent("Brew", "Brew", new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\BrewButton.png"));
+
         DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "Keep Warm", new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\KeepWarmButton.png"));
 
-        DeviceComponent BrewButton = new DeviceComponent("Brew", "Brew", new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\BrewButton.png"));
+
+        this.FrontStack.getChildren().addAll(PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView());
+        PowButton.getComponentView().setTranslateX(180);
+        PowButton.getComponentView().setTranslateY(-257);
+        PowButton.getComponentView().setScaleX(1.65);
+        PowButton.getComponentView().setScaleY(1.65);
+
+        BrewButton.getComponentView().setTranslateX(12);
+        BrewButton.getComponentView().setTranslateY(-257);
+        BrewButton.getComponentView().setScaleX(1.35);
+        BrewButton.getComponentView().setScaleY(1.35);
+
+        HeatButton.getComponentView().setTranslateX(-142);
+        HeatButton.getComponentView().setTranslateY(-257);
+        HeatButton.getComponentView().setScaleX(1.35);
+        HeatButton.getComponentView().setScaleY(1.35);
 
         this.FrontPane.setLeft(this.ErrorMenu);
         this.FrontPane.setRight(this.POVMenu);
-        this.FrontPane.setCenter(FrontStack);
+        this.FrontPane.setCenter(this.FrontStack);
 
         return new Scene(this.FrontPane);
     }
@@ -158,8 +177,8 @@ public class CoffeeMakerPOVs extends Application {
         Image LeftUnplugged = new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\POV\\Left\\LeftUnplugged.png");
         ImageView LeftPOV = new ImageView();
         LeftPOV.setImage(LeftUnplugged);
-        StackPane LeftStack = new StackPane();
-        LeftStack.getChildren().add(LeftPOV);
+        this.LeftStack = new StackPane();
+        this.LeftStack.getChildren().add(LeftPOV);
         this.LeftPane.setCenter(LeftStack);
 
         return new Scene(this.LeftPane);
@@ -169,8 +188,8 @@ public class CoffeeMakerPOVs extends Application {
         Image WaterFull = new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\POV\\Right\\RightWaterFull.png");
         ImageView RightPOV = new ImageView();
         RightPOV.setImage(WaterFull);
-        StackPane RightStack = new StackPane();
-        RightStack.getChildren().add(RightPOV);
+        this.RightStack = new StackPane();
+        this.RightStack.getChildren().add(RightPOV);
         this.RightPane.setCenter(RightStack);
 
         return new Scene(this.RightPane);
@@ -180,8 +199,8 @@ public class CoffeeMakerPOVs extends Application {
         Image BackEmpty = new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\POV\\Back\\BackWaterEmpty.png");
         ImageView BackPOV = new ImageView();
         BackPOV.setImage(BackEmpty);
-        StackPane BackStack = new StackPane();
-        BackStack.getChildren().add(BackPOV);
+        this.BackStack = new StackPane();
+        this.BackStack.getChildren().add(BackPOV);
         this.BackPane.setCenter(BackStack);
         return new Scene(this.BackPane);
     }
@@ -190,8 +209,8 @@ public class CoffeeMakerPOVs extends Application {
         Image TopOpenEmpty = new Image("C:\\Users\\Admin.DIGITALSTORM-PC\\IdeaProjects\\CoffeeMakerVisual\\resources\\CoffeeMakerImages\\POV\\Top\\TopWaterEmptyLidOpened.png");
         ImageView TopPOV = new ImageView();
         TopPOV.setImage(TopOpenEmpty);
-        StackPane TopStack = new StackPane();
-        TopStack.getChildren().add(TopPOV);
+        this.TopStack = new StackPane();
+        this.TopStack.getChildren().add(TopPOV);
         this.TopPane.setCenter(TopStack);
 
         return new Scene(this.TopPane);

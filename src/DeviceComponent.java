@@ -1,7 +1,10 @@
 import javafx.event.EventHandler;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 
 /**
@@ -15,7 +18,7 @@ import javafx.scene.input.MouseEvent;
 public class DeviceComponent extends UserControl implements Component{
 
     private final ImageView componentView;
-    Image componentImage;
+    private final Image componentImage;
 
 
     public DeviceComponent(String name, String command, Image img) {
@@ -24,6 +27,11 @@ public class DeviceComponent extends UserControl implements Component{
         componentView = new ImageView();
         componentView.setImage(this.componentImage);
 
+        DropShadow outline = new DropShadow();
+        outline.setColor(Color.GREEN);
+        outline.setRadius(10);
+        outline.setSpread(0.5);
+
         this.componentView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -31,6 +39,19 @@ public class DeviceComponent extends UserControl implements Component{
             }
         });
 
+        this.componentView.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                componentView.setEffect(outline);
+            }
+        });
+
+        this.componentView.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                componentView.setEffect(null);
+            }
+        });
     }
 
     @Override
