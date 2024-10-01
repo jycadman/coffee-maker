@@ -58,36 +58,25 @@ public class Terminal {
                             break;
 
                         // Commands for LEDs
-                        case "PLT": // Pink LED on
-                            System.out.println("Pink LED on");
+                        case "BLED": // Brewing LEDs
+                            System.out.println("brew LED on");
                             break;
-                        case "PLF": // Pink LED off
-                            System.out.println("Pink LED off");
+                        case "HLED": // Heating LEDs
+                            System.out.println("heating LED on");
                             break;
-                        case "GLT": // Green LED on
-                            System.out.println("Green LED on");
+                        case "ELED": // Error LEDs
+                            System.out.println("error LED on");
                             break;
-                        case "GLF": // Green LED off
-                            System.out.println("Green LED off");
+                        case "ALO": // ALL LEDs off
+                            System.out.println("all LED off");
                             break;
-                        case "BLT": // Blue LED on
-                            System.out.println("Blue LED on");
+                        case "SLTW": // Standby with water
+                            System.out.println("StandBy with water");
                             break;
-                        case "BLF": // Blue LED off
-                            System.out.println("Blue LED off");
+                        case "SLFW": // Standby without water
+                            System.out.println("StandBy without water");
                             break;
-                        case "YLT": // Yellow LED on
-                            System.out.println("Yellow LED on");
-                            break;
-                        case "YLF": // Yellow LED off
-                            System.out.println("Yellow LED off");
-                            break;
-                        case "RLT": // Red LED on
-                            System.out.println("Red LED on");
-                            break;
-                        case "RLF": // Red LED off
-                            System.out.println("Red LED off");
-                            break;
+
                         // Commands for devices.
                         case "HHU": // Heater heat up
                             System.out.println("heating up");
@@ -100,7 +89,7 @@ public class Terminal {
                             writer.println("0");
                             break;
                         default:
-                            System.out.println("Unknown command");
+                            System.out.println("Unknown command " + nextCommand);
                     }
                 }
 

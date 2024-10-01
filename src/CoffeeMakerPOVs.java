@@ -44,8 +44,6 @@ public class CoffeeMakerPOVs extends Application {
     private final VBox POVMenu = new VBox();
     private final VBox ErrorMenu = new VBox();
 
-    private MachineState currMState =  MachineState.OFF;
-
     private static PrintWriter writer = null; // Use this to write to the coffee maker.
     private static BufferedReader reader = null; // Use this to read from the coffee maker.
 

@@ -1,3 +1,4 @@
+import javax.crypto.Mac;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,14 +30,27 @@ public class Main {
 
     public static void standBy() {
         System.out.println("in standBy");
-        // voltage sensor, resevoir sensor, lid sensor, carafe sensor, led bank
-        //powerButton.negate();
-        setAllLEDsToFalse();
-        if (voltageSensor.isVoltageCorrect() && reservoirSensor.hasWater() && carafeSensor.carafeInPlace() && lidSensor.isClosed()) {
-            writer.println(ledBank.voltageLEDOn());
-        } else {writer.println(ledBank.errorLEDOn());}
-    }
+        writer.println(MachineState.ALL_LEDS_OFF.getCommand());
 
+        // Checks if there is correct power.
+        if (!voltageSensor.isVoltageCorrect()){
+            writer.println(MachineState.ERROR_LEDS.getCommand());
+            return;
+        }
+
+        // Checks if the reservoir has water.
+        if (reservoirSensor.hasWater()){
+            writer.println(MachineState.STANDBY_LEDS_WITH_WATER.getCommand());
+        } else {
+            writer.println(MachineState.STANDBY_LEDS_WITHOUT_WATER.getCommand());
+        }
+
+        // The timer and for loop are so the coffee maker does not spam the socket. It waits for
+        // a timer or other inputs to move on. It will wait for 2.5 seconds before moving on.
+        timer.set(2500);
+        timer.reset();
+        while(!timer.timeout() && !brewButton.getStatus() && !heatingButton.getStatus() && !powerButton.get());
+    }
 
     public static void brewing(){
         System.out.println("in brewing");
@@ -44,8 +58,8 @@ public class Main {
         //brewButton.negate();
 
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
-            writer.println(heater.heatUp());
-            writer.println(ledBank.brewEDOn());
+            writer.println(MachineState.HEAT_UP.getCommand());
+            writer.println(MachineState.BREWING_LEDS.getCommand());
             timer.set(5000); // Five seconds
             timer.reset();
 
@@ -62,7 +76,8 @@ public class Main {
             }
 
             System.out.println("Brewing Done");
-            writer.println("CI1");
+            writer.println(CarafeState.C100.getLevel());
+            writer.println(MachineState.COOL_DOWN.getCommand());
         } else {
             System.out.println("Failed to Brew");
         }
@@ -74,24 +89,21 @@ public class Main {
         // Done heating button, temp sensor, carafe sensor, led bank, heater, timer
         // Basic check for carafe
         if (!carafeSensor.carafeInPlace()) {
-            setAllLEDsToFalse(); // Set all LEDS to off
-            writer.println(ledBank.errorLEDOn());
-            System.out.print("\n Error State in Heating, Talk with group on what to do\n");
+            System.out.println("Heating failed carafe not in place");
             return;
         }
 
-        writer.println(ledBank.heatingLEDOn());
-        writer.println(heater.heatUp());
+        writer.println(MachineState.HEATING_LEDS.getCommand());
+        writer.println(MachineState.HEAT_UP.getCommand());
 
         timer.set(15000);
         timer.reset();
 
         while (!timer.timeout() && !heatingButton.getStatus()){
-            if (temperatureSensor.getTemp() > optimalWaterTemp + 20 || temperatureSensor.getTemp() < optimalWaterTemp - 20 ){
-                writer.println(ledBank.heatingLEDOff());
-                writer.println(heater.coolDown());
-                writer.println(ledBank.errorLEDOn());
-                break;
+            if (temperatureSensor.getTemp() > maxWaterTemp){
+                writer.println(MachineState.ERROR_LEDS.getCommand());
+                writer.println(MachineState.COOL_DOWN.getCommand());
+                return;
             }
         }
 
@@ -103,18 +115,8 @@ public class Main {
             heatingButton.turnOff();
         }
 
-        writer.println(heater.coolDown());
+        writer.println(MachineState.COOL_DOWN.getCommand());
     }
-
-
-    public static void setAllLEDsToFalse(){
-        writer.println(ledBank.errorLEDOff());
-        writer.println(ledBank.brewEDOff());
-        writer.println(ledBank.reservoirLEDOff());
-        writer.println(ledBank.voltageLEDOff());
-        writer.println(ledBank.heatingLEDOff());
-    }
-
 
     public static void main(String[] args) {
         // Instantiate classes
@@ -249,10 +251,10 @@ public class Main {
         });
         perserThread.start();
 
-        standBy();
         while(!powerButton.get()){
             // I don't know why the print is needed, but errors happen without it.
             System.out.print("");
+            standBy();
             if (brewButton.getStatus()){
                 brewButton.negate();
                 brewing();
