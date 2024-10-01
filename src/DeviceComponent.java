@@ -5,6 +5,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.Scanner;
 
 
 /**
@@ -20,6 +24,9 @@ public class DeviceComponent extends UserControl implements Component{
     private final ImageView componentView;
     private final Image componentImage;
 
+    static PrintWriter writer = null; // Use this to write to the coffee maker.
+    static BufferedReader reader = null; // Use this to read from the coffee maker.
+
 
     public DeviceComponent(String name, String command, Image img) {
         super(name, command);
@@ -31,6 +38,16 @@ public class DeviceComponent extends UserControl implements Component{
         outline.setColor(Color.GREEN);
         outline.setRadius(10);
         outline.setSpread(0.5);
+
+        Socket coffeeMaker;
+
+        try {
+            coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
+            writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
+            reader = new BufferedReader(new InputStreamReader(coffeeMaker.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         this.componentView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
