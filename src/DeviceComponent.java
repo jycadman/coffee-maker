@@ -28,9 +28,10 @@ public class DeviceComponent extends UserControl implements Component{
     static BufferedReader reader = null; // Use this to read from the coffee maker.
 
 
-    public DeviceComponent(String name, String command, Image img) {
+    public DeviceComponent(String name, String command, Image img, PrintWriter writer) {
         super(name, command);
         this.componentImage = img;
+        this.writer = writer;
         componentView = new ImageView();
         componentView.setImage(this.componentImage);
 
@@ -38,16 +39,6 @@ public class DeviceComponent extends UserControl implements Component{
         outline.setColor(Color.GREEN);
         outline.setRadius(10);
         outline.setSpread(0.5);
-
-        Socket coffeeMaker;
-
-        try {
-            coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
-            writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(coffeeMaker.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         this.componentView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

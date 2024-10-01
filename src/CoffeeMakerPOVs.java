@@ -150,11 +150,21 @@ public class CoffeeMakerPOVs extends Application {
         this.FrontStack = new StackPane();
         FrontStack.getChildren().add(FrontPOV);
 
-        DeviceComponent PowButton = new DeviceComponent("Power Button", "Provide Power", new Image("file:resources/CoffeeMakerImages/PowerButton.png"));
+        Socket coffeeMaker;
 
-        DeviceComponent BrewButton = new DeviceComponent("Brew", "Brew", new Image("file:resources/CoffeeMakerImages/BrewButton.png"));
+        try {
+            coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
+            writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
+            reader = new BufferedReader(new InputStreamReader(coffeeMaker.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "Keep Warm", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"));
+        DeviceComponent PowButton = new DeviceComponent("Power Button", "Provide Power", new Image("file:resources/CoffeeMakerImages/PowerButton.png"),writer);
+
+        DeviceComponent BrewButton = new DeviceComponent("Brew", "Brew", new Image("file:resources/CoffeeMakerImages/BrewButton.png"),writer);
+
+        DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "Keep Warm", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
 
 
         this.FrontStack.getChildren().addAll(PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView());
