@@ -11,6 +11,7 @@ public enum MachineState {
     VOLTAGE_SENSOR_SET("VSS"),
     HEAT_UP("HHU"),
     COOL_DOWN("HCD"),
+    STANDBY("STBY"),
     BREWING_LEDS("BLED"), //Pink, yellow, green
     HEATING_LEDS("HLED"),//Pink, yellow,
     ERROR_LEDS("ELED"),

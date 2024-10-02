@@ -1,4 +1,3 @@
-import javax.crypto.Mac;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -6,6 +5,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Main {
     static final Scanner scanner = new Scanner(System.in);
@@ -28,9 +33,9 @@ public class Main {
     static int maxWaterTemp = 250;
 
 
-    public static void standBy() {
-        writer.println(MachineState.ALL_LEDS_OFF.getCommand());
+    public static synchronized void standBy() {
 
+        writer.println(MachineState.ALL_LEDS_OFF.getCommand());
         // Checks if there is correct power.
         if (!voltageSensor.isVoltageCorrect()){
             writer.println(MachineState.ERROR_LEDS.getCommand());
@@ -46,24 +51,26 @@ public class Main {
 
         // The timer and for loop are so the coffee maker does not spam the socket. It waits for
         // a timer or other inputs to move on. It will wait for 2.5 seconds before moving on.
-        timer.set(100);
-        timer.reset();
-        while(!timer.timeout() && !brewButton.getStatus() && !heatingButton.getStatus() && !powerButton.get());
+        //timer.set(100);
+        //timer.reset();
+        //while(!timer.timeout() && !brewButton.getStatus() && !heatingButton.getStatus() && !powerButton.get());
     }
 
-    public static void brewing(){
+    public static synchronized void brewing(){
         System.out.println("in brewing");
         // Temp sensor, reservoir sensor, lid sensor ,carafe sensor, led bank, heater, timer
         //brewButton.negate();
 
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
-            writer.println(MachineState.HEAT_UP.getCommand());
-            writer.println(MachineState.BREWING_LEDS.getCommand());
+            //writer.println(MachineState.HEAT_UP.getCommand());
+            //writer.println(MachineState.BREWING_LEDS.getCommand());
             //timer.set(1000); // Five seconds
             //timer.reset();
+            heating();
 
             System.out.println("Brewing");
-            writer.println("C00");
+            writer.println("SB");
+            //writer.println("C00");
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
@@ -101,7 +108,7 @@ public class Main {
             writer.println("CI1");
 
             if (timer.timeout()) {
-                System.out.println("Timed out");
+                writer.println("FB");
             }
 
             if(brewButton.getStatus()){
@@ -116,7 +123,7 @@ public class Main {
     }
 
 
-    public static void heating() {
+    public static synchronized void heating() {
         System.out.println("in heating");
         // Done heating button, temp sensor, carafe sensor, led bank, heater, timer
         // Basic check for carafe
@@ -171,6 +178,8 @@ public class Main {
         LEDBank ledBank = new LEDBank();
         Heater heater = new Heater();
         Timer timer = new Timer();
+        ExecutorService threadRunner = Executors.newFixedThreadPool(5);
+        ScheduledExecutorService readExecutor = Executors.newScheduledThreadPool(2);
 
         // Assign it
         Main.brewButton = brewButton;
@@ -215,98 +224,114 @@ public class Main {
         Thread perserThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean running = true;
+                AtomicBoolean running = new AtomicBoolean(true);
+                AtomicReference<String> next = new AtomicReference<>("");
                 System.out.println("\nSocket thread running");
-                while(running) {
-                    String next = null;
+
+                readExecutor.scheduleAtFixedRate(() -> {
+                    standBy();
                     try {
-                        next = reader.readLine();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
+                        next.set(reader.readLine());
+
+                        switch(next.get()){
+                                case "BBP": // Brew Button Pressed
+                                    // System.out.println("Brew button pressed");
+                                    //brewButton.negate();
+                                    threadRunner.submit(Main::brewing);
+                                    break;
+                                case "HBP": // Heating Button Pressed
+                                    System.out.println("Heating button pressed");
+                                    heatingButton.negate();
+                                    threadRunner.submit(Main::heating);
+                                    break;
+                                case "PBP": // Power Button Pressed
+                                    System.out.println("Power button pressed");
+                                    powerButton.negate();
+                                    running.set(false);
+                                    break;
+                                case "CSS": // Carafe Sensor Set;
+                                    carafeSensor.negate();
+                                    System.out.println("Carafe is " + carafeSensor.carafeInPlace());
+                                    break;
+                                case "LST": // LidSensor True;
+                                    System.out.println("Lid is down");
+                                    lidSensor.close();
+                                    break;
+                                case "LSF": // LidSensor False
+                                    System.out.println("Lid is up");
+                                    lidSensor.open();
+                                    break;
+                                case "RST": // ReservoirSensor True
+                                    System.out.println("There is water");
+                                    reservoirSensor.fill();
+                                    break;
+                                case "RSF": // ReservoirSensor False
+                                    System.out.println("There is not water");
+                                    reservoirSensor.empty();
+                                    break;
+                                case "STBY":
+                                System.out.println("In standby");
+                                case "TSS": // Temp Sensor Set
+                                    try {
+                                        String num = reader.readLine();
+                                        System.out.println("Setting temperature to " + num);
+                                        temperatureSensor.setTemp(Integer.parseInt(num));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                                case "VSS": // Voltage sensor set
+                                    try {
+                                        String num = reader.readLine();
+                                        System.out.println("Setting voltage to " + num);
+                                        voltageSensor.setVoltage(Integer.parseInt(num));
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    break;
+                                default:
+                                    System.out.println("Unknown command " + next);
+                            }
+
+                        } catch (IOException e) {
+                            System.out.println("Test");
+                        }
+                }, 0, 1, TimeUnit.SECONDS);
+                while(running.get()) {
                     // These parse commands sent from the terminal
                     // and changes the devices. Some commands expect
                     // an integer to be given as well.
-                    switch(next){
-                        case "BBP": // Brew Button Pressed
-                            System.out.println("Brew button pressed");
-                            brewButton.negate();
-                            break;
-                        case "HBP": // Heating Button Pressed
-                            System.out.println("Heating button pressed");
-                            heatingButton.negate();
-                            break;
-                        case "PBP": // Power Button Pressed
-                            System.out.println("Power button pressed");
-                            powerButton.negate();
-                            running = false;
-                            break;
-                        case "CSS": // Carafe Sensor Set;
-                            carafeSensor.negate();
-                            System.out.println("Carafe is " + carafeSensor.carafeInPlace());
-                            break;
-                        case "LST": // LidSensor True;
-                            System.out.println("Lid is down");
-                            lidSensor.close();
-                            break;
-                        case "LSF": // LidSensor False
-                            System.out.println("Lid is up");
-                            lidSensor.open();
-                            break;
-                        case "RST": // ReservoirSensor True
-                            System.out.println("There is water");
-                            reservoirSensor.fill();
-                            break;
-                        case "RSF": // ReservoirSensor False
-                            System.out.println("There is not water");
-                            reservoirSensor.empty();
-                            break;
-                        case "TSS": // Temp Sensor Set
-                            try {
-                                String num = reader.readLine();
-                                System.out.println("Setting temperature to " + num);
-                                temperatureSensor.setTemp(Integer.parseInt(num));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            break;
-                        case "VSS": // Voltage sensor set
-                            try {
-                                String num = reader.readLine();
-                                System.out.println("Setting voltage to " + num);
-                                voltageSensor.setVoltage(Integer.parseInt(num));
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            break;
-                        default:
-                            System.out.println("Unknown command " + next);
-                    }
+                }
+                threadRunner.shutdown();
+                readExecutor.shutdown();
+                try {
+                    mySocket.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
         perserThread.start();
+//        standbyThread.start();
+//        brewingThread.start();
+//        heaterThread.start();
 
-        while(!powerButton.get()){
-            // I don't know why the print is needed, but errors happen without it.
-            System.out.print("");
-            standBy();
-            if (brewButton.getStatus()){
-                brewButton.negate();
-                brewing();
-            }
-            else if (heatingButton.getStatus()) {
-                heatingButton.negate();
-                heating();
-            }
-        }
+//        while(!powerButton.get()){
+//            // I don't know why the print is needed, but errors happen without it.
+//            System.out.print("");
+//            standbyThread.start();
+//            if (brewButton.getStatus()){
+//                brewButton.negate();
+//                brewingThread.start();
+//            }
+//            else if (heatingButton.getStatus()) {
+//                heatingButton.negate();
+//                heaterThread.start();
+//            }
+//        }
 
         //////// SOCKET SECTION ////////
-        try {
-            mySocket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
         //////// END SOCKET SECTION ////////
 
     }

@@ -10,7 +10,7 @@ public enum CarafeState {
                    new Image("file:resources/CoffeeMakerImages/Carafe/Front/Carafe25Pour.png"),
                    new Image("file:resources/CoffeeMakerImages/Carafe/Right/Carafe25Right.png"),
                    new Image("file:resources/CoffeeMakerImages/Carafe/Right/Carafe25RightPour.png")),
-    C50("C50%", new Image("file:resources/CoffeeMakerImages/Carafe/Front/Carafe50.png"),
+    C50("C50", new Image("file:resources/CoffeeMakerImages/Carafe/Front/Carafe50.png"),
                    new Image("file:resources/CoffeeMakerImages/Carafe/Front/Carafe50Pour.png"),
                    new Image("file:resources/CoffeeMakerImages/Carafe/Right/Carafe50Right.png"),
                    new Image("file:resources/CoffeeMakerImages/Carafe/Right/Carafe50RightPour.png")),
