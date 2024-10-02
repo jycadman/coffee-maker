@@ -28,6 +28,7 @@ public class CoffeeMakerPOVs extends Application {
 
     // Carafe ImageView
     private final ImageView CarafeImage = new ImageView();
+    private Image currentCarafeImage;
 
     // Front POV items
     private final Scene FrontView;
@@ -80,6 +81,7 @@ public class CoffeeMakerPOVs extends Application {
     private CarafeState currentCarafe = CarafeState.C0;
     private PowerBlockState currentPower = PowerBlockState.UNPLUGGED;
     private VoltState currentVoltage = VoltState.VOLT120;
+    private WaterState currentWater = WaterState.WEMPTY;
     public CoffeeMakerPOVs() {
         makeMenus();
         try {
@@ -297,18 +299,48 @@ public class CoffeeMakerPOVs extends Application {
 
         Button waterEmpty = new Button();
         waterEmpty.setText("Empty reservoir");
+        waterEmpty.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                currentWater = WaterState.WEMPTY;
+            }
+        });
 
         Button water25 = new Button();
         water25.setText("Fill to 25%");
+        water25.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                currentWater = WaterState.W25;
+            }
+        });
 
         Button water50 = new Button();
         water50.setText("Fill to 50%");
+        water50.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                currentWater = WaterState.W50;
+            }
+        });
 
         Button water75 = new Button();
         water75.setText("Fill to 75%");
+        water75.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                currentWater = WaterState.W75;
+            }
+        });
 
         Button waterFull = new Button();
         waterFull.setText("Fill to full");
+        waterFull.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                currentWater = WaterState.W100;
+            }
+        });
 
         // Menu setup
         this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV);
