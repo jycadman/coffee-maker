@@ -60,12 +60,25 @@ public class Main {
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
             writer.println(MachineState.HEAT_UP.getCommand());
             writer.println(MachineState.BREWING_LEDS.getCommand());
-            timer.set(5000); // Five seconds
+            timer.set(1000); // Five seconds
             timer.reset();
 
             System.out.println("Brewing");
 
             while (!timer.timeout() && !brewButton.getStatus()){}
+            writer.println("C25");
+            timer.reset();
+
+            while (!timer.timeout() && !brewButton.getStatus()){}
+            writer.println("C50");
+            timer.reset();
+
+            while (!timer.timeout() && !brewButton.getStatus()){}
+            writer.println("C75");
+            timer.reset();
+
+            while (!timer.timeout() && !brewButton.getStatus()){}
+            writer.println("CI1");
 
             if (timer.timeout()) {
                 System.out.println("Timed out");
@@ -76,7 +89,6 @@ public class Main {
             }
 
             System.out.println("Brewing Done");
-            writer.println(CarafeState.C100.getLevel());
             writer.println(MachineState.COOL_DOWN.getCommand());
         } else {
             System.out.println("Failed to Brew");

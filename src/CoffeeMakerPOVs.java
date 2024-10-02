@@ -1,3 +1,4 @@
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -302,6 +303,7 @@ public class CoffeeMakerPOVs extends Application {
         waterEmpty.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("RSF");
                 currentWater = WaterState.WEMPTY;
             }
         });
@@ -311,6 +313,7 @@ public class CoffeeMakerPOVs extends Application {
         water25.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("RST");
                 currentWater = WaterState.W25;
             }
         });
@@ -320,6 +323,7 @@ public class CoffeeMakerPOVs extends Application {
         water50.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("RST");
                 currentWater = WaterState.W50;
             }
         });
@@ -329,6 +333,7 @@ public class CoffeeMakerPOVs extends Application {
         water75.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("RST");
                 currentWater = WaterState.W75;
             }
         });
@@ -338,6 +343,7 @@ public class CoffeeMakerPOVs extends Application {
         waterFull.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("RST");
                 currentWater = WaterState.W100;
             }
         });
@@ -501,8 +507,8 @@ public class CoffeeMakerPOVs extends Application {
     }
 
     private Scene makeRightPOV() {
-        Image WaterFull = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterEmpty.png");
-        this.RightPOV.setImage(WaterFull);
+        Image WaterEmpty = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterEmpty.png");
+        this.RightPOV.setImage(WaterEmpty);
         this.RightStack = new StackPane();
         this.RightStack.getChildren().add(this.RightPOV);
         this.RightPane.setCenter(RightStack);
@@ -614,6 +620,79 @@ public class CoffeeMakerPOVs extends Application {
         this.Cafe.setScene(FrontView);
         this.Cafe.show();
 
-        Socket serverSocket;
+        AnimationTimer handleReader = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                String next = null;
+                try {
+                    next = reader.readLine();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                switch (next) {
+                    // Commands for Carafe
+                    case "C00": // Carafe empty
+                        System.out.println("Carafe empty");
+                        // TODO change carafe image.
+                        break;
+                    case "C25": // Carafe 25%
+                        System.out.println("Carafe 25%");
+                        // TODO change carafe image.
+                        break;
+                    case "C50": // Carafe 50%
+                        System.out.println("Carafe 50%");
+                        // TODO change carafe image.
+                        break;
+                    case "C75": // Carafe 75%
+                        System.out.println("Carafe 75%");
+                        // TODO change carafe image.
+                        break;
+                    case "CI1": // Carafe is full
+                        System.out.println("Carafe full");
+                        // TODO change carafe image.
+                        break;
+
+                    // Commands for LEDs
+                    case "BLED": // Brewing LEDs
+                        System.out.println("brew LED on");
+                        // TODO change LED image.
+                        break;
+                    case "HLED": // Heating LEDs
+                        System.out.println("heating LED on");
+                        // TODO change LED image.
+                        break;
+                    case "ELED": // Error LEDs
+                        System.out.println("error LED on");
+                        // TODO change LED image.
+                        break;
+                    case "ALO": // ALL LEDs off
+                        System.out.println("all LED off");
+                        // TODO change LED image.
+                        break;
+                    case "SLTW": // Standby with water
+                        System.out.println("StandBy with water");
+                        // TODO change LED image.
+                        break;
+                    case "SLFW": // Standby without water
+                        System.out.println("StandBy without water");
+                        // TODO change LED image.
+                        break;
+                    // Commands for devices.
+                    case "HHU": // Heater heat up
+                        System.out.println("heating up");
+                        writer.println("TSS");
+                        writer.println("215");
+                        break;
+                    case "HCD": // Heater cool down
+                        System.out.println("cooling down");
+                        writer.println("TSS");
+                        writer.println("0");
+                        break;
+                    default:
+                        System.out.println("Unknown command " + next);
+                }
+            }
+        };
+        handleReader.start();
     }
 }
