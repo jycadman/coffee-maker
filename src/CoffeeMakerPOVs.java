@@ -703,6 +703,7 @@ public class CoffeeMakerPOVs extends Application {
                         RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
                         BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
                         TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
+                        writer.println("RSF");
                         break;
 
                     // Commands for LEDs
