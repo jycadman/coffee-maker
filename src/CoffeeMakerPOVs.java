@@ -27,12 +27,9 @@ public class CoffeeMakerPOVs extends Application {
     // POV helper
     private POVList currentPOV;
 
-    // Carafe ImageView
-    private final ImageView CarafeImage = new ImageView();
-    private Image currentCarafeImage;
-
     // Component Interactables that need to be accessed by multiple methods
-    private final DeviceComponent Carafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
+    private final DeviceComponent frontCarafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
+    private final DeviceComponent rightCarafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmptyRight.png"), writer);
     DeviceComponent coffeeGrind = new DeviceComponent("Coffee Grind", "Coffee", new Image("file:resources/CoffeeMakerImages/InsertCoffee.png"), writer);
     DeviceComponent coffeeHolder = new DeviceComponent("Coffee Holder", "Hold", new Image("file:resources/CoffeeMakerImages/CoffeeHolder.png"), writer);
 
@@ -40,32 +37,26 @@ public class CoffeeMakerPOVs extends Application {
     private final Scene FrontView;
     private final BorderPane FrontPane = new BorderPane();
     private final ImageView FrontImagePOV = new ImageView();
-    private StackPane FrontStack;
 
     // Left POV items
     private final Scene LeftView;
     private final BorderPane LeftPane = new BorderPane();
     private final ImageView LeftImagePOV = new ImageView();
-    private StackPane LeftStack;
 
     // Right POV items
     private final Scene RightView;
     private final BorderPane RightPane = new BorderPane();
     private final ImageView RightImagePOV = new ImageView();
 
-    private StackPane RightStack;
-
     // Back POV items
     private final Scene BackView;
     private final BorderPane BackPane = new BorderPane();
     private final ImageView BackImagePOV = new ImageView();
-    private StackPane BackStack;
 
     // Top POV items
     private final Scene TopView;
     private final BorderPane TopPane = new BorderPane();
     private final ImageView TopImagePOV = new ImageView();
-    private StackPane TopStack;
 
     // Menu Boxes
     private final VBox POVMenu = new VBox();
@@ -237,11 +228,12 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C0.getFrontCarafe());
+                    frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C0.getRightCarafe());
+                    rightCarafe.getComponentView().setImage(CarafeState.C0.getRightCarafe());
                 }
+                currentCarafe = CarafeState.C0;
             }
         });
 
@@ -251,11 +243,12 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C25.getFrontCarafe());
+                    frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C25.getRightCarafe());
+                    rightCarafe.getComponentView().setImage(CarafeState.C25.getRightCarafe());
                 }
+                currentCarafe = CarafeState.C25;
             }
         });
 
@@ -265,11 +258,12 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C50.getFrontCarafe());
+                    frontCarafe.getComponentView().setImage(CarafeState.C50.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C50.getRightCarafe());
+                    rightCarafe.getComponentView().setImage(CarafeState.C50.getRightCarafe());
                 }
+                currentCarafe = CarafeState.C50;
             }
         });
 
@@ -279,11 +273,12 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C75.getFrontCarafe());
+                    frontCarafe.getComponentView().setImage(CarafeState.C75.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C75.getRightCarafe());
+                    rightCarafe.getComponentView().setImage(CarafeState.C75.getRightCarafe());
                 }
+                currentCarafe = CarafeState.C75;
             }
         });
 
@@ -293,11 +288,12 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
+                    frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    Carafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
+                    rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
                 }
+                currentCarafe = CarafeState.C100;
             }
         });
 
@@ -431,7 +427,13 @@ public class CoffeeMakerPOVs extends Application {
         switch (this.currentPOV) {
             case FRONT -> {
                 switch (this.currentCarafe) {
-                    case C0, C25, C50, C75, C100 -> this.Carafe.getComponentView().setImage(this.currentCarafe.getFrontCarafe());
+                    case C0, C25, C50, C75, C100 -> this.frontCarafe.getComponentView().setImage(this.currentCarafe.getFrontCarafe());
+                }
+                if (this.carafePresence.equals(CarafeInPlace.MISSING)) {
+                    this.frontCarafe.getComponentView().setTranslateX(-300);
+                }
+                else {
+                    this.frontCarafe.getComponentView().setTranslateX(-5);
                 }
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(false);
@@ -444,7 +446,19 @@ public class CoffeeMakerPOVs extends Application {
                 this.CarafeMenu.setVisible(false);
             }
             case RIGHT -> {
-
+                switch (this.currentCarafe) {
+                    case C0, C25, C50, C75, C100 -> this.rightCarafe.getComponentView().setImage(this.currentCarafe.getRightCarafe());
+                }
+                if (this.carafePresence.equals(CarafeInPlace.MISSING)) {
+                    this.rightCarafe.getComponentView().setTranslateX(-400);
+                    rightCarafe.getComponentView().setScaleX(0.33);
+                    rightCarafe.getComponentView().setScaleY(0.33);
+                }
+                else {
+                    this.rightCarafe.getComponentView().setTranslateX(-170);
+                    rightCarafe.getComponentView().setScaleX(0.44);
+                    rightCarafe.getComponentView().setScaleY(0.44);
+                }
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(true);
                 this.CarafeMenu.setVisible(true);
@@ -469,7 +483,8 @@ public class CoffeeMakerPOVs extends Application {
 
         Image FrontOFF = new Image("file:resources/CoffeeMakerImages/POV/Front/Front.png");
         this.FrontImagePOV.setImage(FrontOFF);
-        this.FrontStack = new StackPane();
+        StackPane frontStack = new StackPane();
+        frontStack.setPrefWidth(1000);
 
         DeviceComponent PowButton = new DeviceComponent("Power Button", "PBP", new Image("file:resources/CoffeeMakerImages/PowerButton.png"),writer);
 
@@ -478,7 +493,7 @@ public class CoffeeMakerPOVs extends Application {
         DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "HBP", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
 
 
-        this.FrontStack.getChildren().addAll(this.FrontImagePOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), Carafe.getComponentView());
+        frontStack.getChildren().addAll(this.FrontImagePOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), frontCarafe.getComponentView());
         PowButton.getComponentView().setTranslateX(180);
         PowButton.getComponentView().setTranslateY(-257);
         PowButton.getComponentView().setScaleX(1.65);
@@ -494,30 +509,30 @@ public class CoffeeMakerPOVs extends Application {
         HeatButton.getComponentView().setScaleX(1.35);
         HeatButton.getComponentView().setScaleY(1.35);
 
-        Carafe.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+        frontCarafe.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 writer.println("CSS");
                 if (carafePresence.equals(CarafeInPlace.PRESENT)) {
                     carafePresence = CarafeInPlace.MISSING;
-                    Carafe.getComponentView().setTranslateX(-300);
+                    frontCarafe.getComponentView().setTranslateX(-300);
                     System.out.println("Carafe is now MISSING");
                 }
                 else {
                     carafePresence = CarafeInPlace.PRESENT;
-                    Carafe.getComponentView().setTranslateX(-5);
+                    frontCarafe.getComponentView().setTranslateX(-5);
                     System.out.println("Carafe is now PRESENT");
                 }
             }
         });
-        this.Carafe.getComponentView().setScaleX(0.5);
-        this.Carafe.getComponentView().setScaleY(0.5);
-        this.Carafe.getComponentView().setTranslateX(-5);
-        this.Carafe.getComponentView().setTranslateY(75);
+        this.frontCarafe.getComponentView().setScaleX(0.5);
+        this.frontCarafe.getComponentView().setScaleY(0.5);
+        this.frontCarafe.getComponentView().setTranslateX(-5);
+        this.frontCarafe.getComponentView().setTranslateY(75);
 
         this.FrontPane.setLeft(this.LeftMenu);
         this.FrontPane.setRight(this.RightMenu);
-        this.FrontPane.setCenter(this.FrontStack);
+        this.FrontPane.setCenter(frontStack);
 
         return new Scene(this.FrontPane);
     }
@@ -526,12 +541,13 @@ public class CoffeeMakerPOVs extends Application {
         Image LeftUnplugged = new Image("file:resources/CoffeeMakerImages/POV/Left/LeftUnplugged.png");
         Image LeftPlugged = new Image("file:resources/CoffeeMakerImages/POV/Left/LeftPlugged.png");
         this.LeftImagePOV.setImage(LeftUnplugged);
-        this.LeftStack = new StackPane();
-        this.LeftPane.setCenter(LeftStack);
+        StackPane leftStack = new StackPane();
+        leftStack.setPrefWidth(1000);
+        this.LeftPane.setCenter(leftStack);
 
         DeviceComponent powerBlock = new DeviceComponent("Power Block", "Provide Power", new Image("file:resources/CoffeeMakerImages/PowerBlock.png"), writer);
 
-        this.LeftStack.getChildren().addAll(this.LeftImagePOV, powerBlock.getComponentView());
+        leftStack.getChildren().addAll(this.LeftImagePOV, powerBlock.getComponentView());
 
         powerBlock.getComponentView().setTranslateY(8);
         powerBlock.getComponentView().setTranslateX(-295);
@@ -555,9 +571,35 @@ public class CoffeeMakerPOVs extends Application {
     private Scene makeRightPOV() {
         Image WaterEmpty = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterEmpty.png");
         this.RightImagePOV.setImage(WaterEmpty);
-        this.RightStack = new StackPane();
-        this.RightStack.getChildren().add(this.RightImagePOV);
-        this.RightPane.setCenter(RightStack);
+        StackPane rightStack = new StackPane();
+        rightStack.setPrefWidth(1000);
+        this.RightPane.setCenter(rightStack);
+
+        rightCarafe.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                writer.println("CSS");
+                if (carafePresence.equals(CarafeInPlace.PRESENT)) {
+                    carafePresence = CarafeInPlace.MISSING;
+                    rightCarafe.getComponentView().setTranslateX(-400);
+                    System.out.println("Carafe is now MISSING");
+                    rightCarafe.getComponentView().setScaleX(0.33);
+                    rightCarafe.getComponentView().setScaleY(0.33);
+                }
+                else {
+                    carafePresence = CarafeInPlace.PRESENT;
+                    rightCarafe.getComponentView().setTranslateX(-170);
+                    System.out.println("Carafe is now PRESENT");
+                    rightCarafe.getComponentView().setScaleX(0.44);
+                    rightCarafe.getComponentView().setScaleY(0.44);
+                }
+            }
+        });
+        this.rightCarafe.getComponentView().setScaleX(0.44);
+        this.rightCarafe.getComponentView().setScaleY(0.44);
+        this.rightCarafe.getComponentView().setTranslateY(70);
+
+        rightStack.getChildren().addAll(this.RightImagePOV, rightCarafe.getComponentView());
 
         return new Scene(this.RightPane);
     }
@@ -565,9 +607,10 @@ public class CoffeeMakerPOVs extends Application {
     private Scene makeBackPOV() {
         Image BackEmpty = new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterEmpty.png");
         this.BackImagePOV.setImage(BackEmpty);
-        this.BackStack = new StackPane();
-        this.BackStack.getChildren().add(this.BackImagePOV);
-        this.BackPane.setCenter(BackStack);
+        StackPane backStack = new StackPane();
+        backStack.setPrefWidth(1000);
+        backStack.getChildren().add(this.BackImagePOV);
+        this.BackPane.setCenter(backStack);
         return new Scene(this.BackPane);
     }
 
@@ -575,12 +618,13 @@ public class CoffeeMakerPOVs extends Application {
         Image TopClosedEmpty = new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterEmptyLidClosed.png");
         Image TopOpenEmpty = new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterEmptyLidOpened.png");
         this.TopImagePOV.setImage(TopClosedEmpty);
-        this.TopStack = new StackPane();
+        StackPane topStack = new StackPane();
+        topStack.setPrefWidth(1000);
 
         DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "LST", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
         DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "LSF", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
 
-        this.TopStack.getChildren().addAll(this.TopImagePOV, coffeeLidClosed.getComponentView(), coffeeLidOpen.getComponentView(), coffeeGrind.getComponentView(), coffeeHolder.getComponentView());
+        topStack.getChildren().addAll(this.TopImagePOV, coffeeLidClosed.getComponentView(), coffeeLidOpen.getComponentView(), coffeeGrind.getComponentView(), coffeeHolder.getComponentView());
 
         coffeeHolder.getComponentView().setVisible(false);
         coffeeHolder.getComponentView().setTranslateY(190);
@@ -651,7 +695,7 @@ public class CoffeeMakerPOVs extends Application {
             }
         });
 
-        this.TopPane.setCenter(TopStack);
+        this.TopPane.setCenter(topStack);
         return new Scene(this.TopPane);
     }
 
@@ -675,39 +719,43 @@ public class CoffeeMakerPOVs extends Application {
                 switch (next) {
                     // Commands for Carafe
                     case "C00": // Carafe empty
-                        // TODO change carafe image.
-                        Carafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
+                        frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
+                        rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
                         break;
                     case "C25": // Carafe 25%
-                        // TODO change carafe image.
-                        Carafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());
+                        frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());
+                        rightCarafe.getComponentView().setImage(CarafeState.C25.getRightPouring());
                         RightImagePOV.setImage(WaterState.W75.getRight());
                         BackImagePOV.setImage(WaterState.W75.getBack());
                         TopImagePOV.setImage(WaterState.W75.getTopClosed());
+                        currentCarafe = CarafeState.C25;
                         break;
                     case "C50": // Carafe 50%
-                        // TODO change carafe image.
-                        Carafe.getComponentView().setImage(CarafeState.C50.getFrontPouring());
+                        frontCarafe.getComponentView().setImage(CarafeState.C50.getFrontPouring());
+                        rightCarafe.getComponentView().setImage(CarafeState.C50.getRightPouring());
                         RightImagePOV.setImage(WaterState.W50.getRight());
                         BackImagePOV.setImage(WaterState.W50.getBack());
                         TopImagePOV.setImage(WaterState.W50.getTopClosed());
+                        currentCarafe = CarafeState.C50;
                         break;
                     case "C75": // Carafe 75%
-                        // TODO change carafe image.
-                        Carafe.getComponentView().setImage(CarafeState.C75.getFrontPouring());
+                        frontCarafe.getComponentView().setImage(CarafeState.C75.getFrontPouring());
+                        rightCarafe.getComponentView().setImage(CarafeState.C75.getRightPouring());
                         RightImagePOV.setImage(WaterState.W25.getRight());
                         BackImagePOV.setImage(WaterState.W25.getBack());
                         TopImagePOV.setImage(WaterState.W25.getTopClosed());
+                        currentCarafe = CarafeState.C75;
                         break;
                     case "CI1": // Carafe is full
-                        // TODO change carafe image.
-                        Carafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
+                        frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
+                        rightCarafe.getComponentView().setImage(CarafeState.C100.getRightPouring());
                         RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
                         BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
                         TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
                         if (currentGrindState.equals(CoffeeGrindState.PRESENT)) {
                             currentGrindState = CoffeeGrindState.MISSING;
                         }
+                        currentCarafe = CarafeState.C100;
                         writer.println("RSF");
                         break;
 
