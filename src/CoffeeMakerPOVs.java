@@ -395,8 +395,17 @@ public class CoffeeMakerPOVs extends Application {
             }
         });
 
+        Button checkCarafe = new Button();
+        checkCarafe.setText("Check Carafe");
+        checkCarafe.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(currentCarafe.getLevel());
+            }
+        });
+
         // Menu setup
-        this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV);
+        this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV, checkCarafe);
         this.POVMenu.setPrefWidth(150);
         this.POVMenu.setAlignment(Pos.CENTER_RIGHT);
         this.POVMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -743,12 +752,17 @@ public class CoffeeMakerPOVs extends Application {
                                     currentMachineState = MachineState.BREW_BUTTON_PRESSED;
                                     frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
                                     rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
-                                case "FB" :
+                                    System.out.println("Start");
+                                    break;
+                                case "FinB" :
                                     currentMachineState = MachineState.STANDBY;
                                     writer.println(MachineState.STANDBY.getCommand());
                                     frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                                     rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
+                                    System.out.println("Finished");
                                     System.out.println(currentCarafe.getLevel());
+                                    currentCarafe = CarafeState.C100;
+                                    break;
                                 // Commands for Carafe
                                 case "C25": // Carafe 25%
                                     frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());

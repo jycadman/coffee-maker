@@ -66,7 +66,8 @@ public class Main {
             //writer.println(MachineState.BREWING_LEDS.getCommand());
             //timer.set(1000); // Five seconds
             //timer.reset();
-            heating();
+            ExecutorService heatingRunner = Executors.newFixedThreadPool(1);
+            heatingRunner.submit(Main::heating);
 
             System.out.println("Brewing");
             writer.println("SB");
@@ -79,7 +80,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
             writer.println("C25");
-            timer.reset();
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
@@ -88,7 +88,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
             writer.println("C50");
-            timer.reset();
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
@@ -97,7 +96,6 @@ public class Main {
                 throw new RuntimeException(e);
             }
             writer.println("C75");
-            timer.reset();
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
@@ -107,9 +105,8 @@ public class Main {
             }
             writer.println("CI1");
 
-            if (timer.timeout()) {
-                writer.println("FB");
-            }
+            writer.println("FinB");
+
 
             if(brewButton.getStatus()){
                 brewButton.turnOff();
@@ -270,7 +267,8 @@ public class Main {
                                     reservoirSensor.empty();
                                     break;
                                 case "STBY":
-                                System.out.println("In standby");
+                                    System.out.println("In standby");
+                                    break;
                                 case "TSS": // Temp Sensor Set
                                     try {
                                         String num = reader.readLine();
