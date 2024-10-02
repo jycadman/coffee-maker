@@ -29,7 +29,6 @@ public class Main {
 
 
     public static void standBy() {
-        System.out.println("in standBy");
         writer.println(MachineState.ALL_LEDS_OFF.getCommand());
 
         // Checks if there is correct power.
@@ -47,7 +46,7 @@ public class Main {
 
         // The timer and for loop are so the coffee maker does not spam the socket. It waits for
         // a timer or other inputs to move on. It will wait for 2.5 seconds before moving on.
-        timer.set(2500);
+        timer.set(100);
         timer.reset();
         while(!timer.timeout() && !brewButton.getStatus() && !heatingButton.getStatus() && !powerButton.get());
     }
@@ -100,6 +99,7 @@ public class Main {
         System.out.println("in heating");
         // Done heating button, temp sensor, carafe sensor, led bank, heater, timer
         // Basic check for carafe
+
         if (!carafeSensor.carafeInPlace()) {
             System.out.println("Heating failed carafe not in place");
             return;
