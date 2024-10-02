@@ -30,7 +30,11 @@ public class CoffeeMakerPOVs extends Application {
     // Carafe ImageView
     private final ImageView CarafeImage = new ImageView();
     private Image currentCarafeImage;
+
+    // Component Interactables that need to be accessed by multiple methods
     private final DeviceComponent Carafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
+    DeviceComponent coffeeGrind = new DeviceComponent("Coffee Grind", "Coffee", new Image("file:resources/CoffeeMakerImages/InsertCoffee.png"), writer);
+    DeviceComponent coffeeHolder = new DeviceComponent("Coffee Holder", "Hold", new Image("file:resources/CoffeeMakerImages/CoffeeHolder.png"), writer);
 
     // Front POV items
     private final Scene FrontView;
@@ -575,8 +579,6 @@ public class CoffeeMakerPOVs extends Application {
 
         DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "LST", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
         DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "LSF", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
-        DeviceComponent coffeeGrind = new DeviceComponent("Coffee Grind", "Coffee", new Image("file:resources/CoffeeMakerImages/InsertCoffee.png"), writer);
-        DeviceComponent coffeeHolder = new DeviceComponent("Coffee Holder", "Hold", new Image("file:resources/CoffeeMakerImages/CoffeeHolder.png"), writer);
 
         this.TopStack.getChildren().addAll(this.TopImagePOV, coffeeLidClosed.getComponentView(), coffeeLidOpen.getComponentView(), coffeeGrind.getComponentView(), coffeeHolder.getComponentView());
 
@@ -703,6 +705,9 @@ public class CoffeeMakerPOVs extends Application {
                         RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
                         BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
                         TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
+                        if (currentGrindState.equals(CoffeeGrindState.PRESENT)) {
+                            currentGrindState = CoffeeGrindState.MISSING;
+                        }
                         writer.println("RSF");
                         break;
 
