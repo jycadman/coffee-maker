@@ -63,6 +63,7 @@ public class Main {
             timer.reset();
 
             System.out.println("Brewing");
+            writer.println("C00");
 
             while (!timer.timeout() && !brewButton.getStatus()){}
             writer.println("C25");
