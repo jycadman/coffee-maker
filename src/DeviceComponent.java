@@ -32,8 +32,8 @@ public class DeviceComponent extends UserControl implements Component{
         super(name, command);
         this.componentImage = img;
         this.writer = writer;
-        componentView = new ImageView();
-        componentView.setImage(this.componentImage);
+        this.componentView = new ImageView();
+        this.componentView.setImage(this.componentImage);
 
         DropShadow outline = new DropShadow();
         outline.setColor(Color.GREEN);
