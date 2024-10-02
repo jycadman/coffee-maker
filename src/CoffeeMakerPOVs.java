@@ -81,7 +81,6 @@ public class CoffeeMakerPOVs extends Application {
     private VoltState currentVoltage = VoltState.VOLT120;
     public CoffeeMakerPOVs() {
         makeMenus();
-
         try {
             coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
             writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
@@ -438,7 +437,7 @@ public class CoffeeMakerPOVs extends Application {
     }
 
     private Scene makeRightPOV() {
-        Image WaterFull = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterFull.png");
+        Image WaterFull = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterEmpty.png");
         this.RightPOV.setImage(WaterFull);
         this.RightStack = new StackPane();
         this.RightStack.getChildren().add(this.RightPOV);
@@ -462,14 +461,6 @@ public class CoffeeMakerPOVs extends Application {
         this.TopPOV.setImage(TopClosedEmpty);
         this.TopStack = new StackPane();
         boolean coffeePresent = false;
-
-        try {
-            coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
-            writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(coffeeMaker.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
         DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "Open", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
         DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "Close", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
@@ -558,16 +549,5 @@ public class CoffeeMakerPOVs extends Application {
         this.Cafe.show();
 
         Socket serverSocket;
-
-        // Connects the socket to the coffee maker and sets up
-        // writer and reader.
-        try {
-            serverSocket = new Socket(InetAddress.getByName(null), 5000);
-            writer = new PrintWriter(serverSocket.getOutputStream(), true);
-            reader = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }
