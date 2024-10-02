@@ -395,17 +395,8 @@ public class CoffeeMakerPOVs extends Application {
             }
         });
 
-        Button checkCarafe = new Button();
-        checkCarafe.setText("Check Carafe");
-        checkCarafe.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(currentCarafe.getLevel());
-            }
-        });
-
         // Menu setup
-        this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV, checkCarafe);
+        this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV);
         this.POVMenu.setPrefWidth(150);
         this.POVMenu.setAlignment(Pos.CENTER_RIGHT);
         this.POVMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
