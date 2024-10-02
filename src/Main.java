@@ -59,25 +59,45 @@ public class Main {
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
             writer.println(MachineState.HEAT_UP.getCommand());
             writer.println(MachineState.BREWING_LEDS.getCommand());
-            timer.set(1000); // Five seconds
-            timer.reset();
+            //timer.set(1000); // Five seconds
+            //timer.reset();
 
             System.out.println("Brewing");
             writer.println("C00");
 
-            while (!timer.timeout() && !brewButton.getStatus()){}
+            //while (!timer.timeout() && !brewButton.getStatus()){}
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             writer.println("C25");
             timer.reset();
 
-            while (!timer.timeout() && !brewButton.getStatus()){}
+            //while (!timer.timeout() && !brewButton.getStatus()){}
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             writer.println("C50");
             timer.reset();
 
-            while (!timer.timeout() && !brewButton.getStatus()){}
+            //while (!timer.timeout() && !brewButton.getStatus()){}
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             writer.println("C75");
             timer.reset();
 
-            while (!timer.timeout() && !brewButton.getStatus()){}
+            //while (!timer.timeout() && !brewButton.getStatus()){}
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             writer.println("CI1");
 
             if (timer.timeout()) {
@@ -109,9 +129,15 @@ public class Main {
         writer.println(MachineState.HEATING_LEDS.getCommand());
         writer.println(MachineState.HEAT_UP.getCommand());
 
-        timer.set(15000);
-        timer.reset();
+        //timer.set(15000);
+        //timer.reset();
 
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        /*
         while (!timer.timeout() && !heatingButton.getStatus()){
             if (temperatureSensor.getTemp() > maxWaterTemp){
                 writer.println(MachineState.ERROR_LEDS.getCommand());
@@ -119,14 +145,15 @@ public class Main {
                 return;
             }
         }
+         */
 
-        if (timer.timeout()) {
-            System.out.println("Timed out");
-        }
+        //if (timer.timeout()) {
+        //    System.out.println("Timed out");
+        //}
 
-        if (heatingButton.getStatus()){
-            heatingButton.turnOff();
-        }
+        //if (heatingButton.getStatus()){
+        //    heatingButton.turnOff();
+        //}
 
         writer.println(MachineState.COOL_DOWN.getCommand());
     }
