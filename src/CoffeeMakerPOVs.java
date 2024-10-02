@@ -75,6 +75,7 @@ public class CoffeeMakerPOVs extends Application {
 
     // Coffee Maker Image States
     private MachineState currentMachineState = MachineState.ALL_LEDS_OFF;
+    private CarafeInPlace carafePresence = CarafeInPlace.PRESENT;
     private CoffeeGrindState currentGrindState = CoffeeGrindState.MISSING;
     private CarafeState currentCarafe = CarafeState.C0;
     private PowerBlockState currentPower = PowerBlockState.UNPLUGGED;
@@ -382,8 +383,10 @@ public class CoffeeMakerPOVs extends Application {
 
         DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "Keep Warm", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
 
+        DeviceComponent Carafe =  new DeviceComponent("Carafe", "Car", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
 
-        this.FrontStack.getChildren().addAll(this.FrontPOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView());
+
+        this.FrontStack.getChildren().addAll(this.FrontPOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), Carafe.getComponentView());
         PowButton.getComponentView().setTranslateX(180);
         PowButton.getComponentView().setTranslateY(-257);
         PowButton.getComponentView().setScaleX(1.65);
@@ -398,6 +401,26 @@ public class CoffeeMakerPOVs extends Application {
         HeatButton.getComponentView().setTranslateY(-257);
         HeatButton.getComponentView().setScaleX(1.35);
         HeatButton.getComponentView().setScaleY(1.35);
+
+        Carafe.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (carafePresence.equals(CarafeInPlace.PRESENT)) {
+                    carafePresence = CarafeInPlace.MISSING;
+                    Carafe.getComponentView().setTranslateX(-300);
+                    System.out.println("Carafe is now MISSING");
+                }
+                else {
+                    carafePresence = CarafeInPlace.PRESENT;
+                    Carafe.getComponentView().setTranslateX(-5);
+                    System.out.println("Carafe is now PRESENT");
+                }
+            }
+        });
+        Carafe.getComponentView().setScaleX(0.5);
+        Carafe.getComponentView().setScaleY(0.5);
+        Carafe.getComponentView().setTranslateX(-5);
+        Carafe.getComponentView().setTranslateY(75);
 
         this.FrontPane.setLeft(this.LeftMenu);
         this.FrontPane.setRight(this.RightMenu);
