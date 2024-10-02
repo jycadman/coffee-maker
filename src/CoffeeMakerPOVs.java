@@ -631,64 +631,51 @@ public class CoffeeMakerPOVs extends Application {
                 switch (next) {
                     // Commands for Carafe
                     case "C00": // Carafe empty
-                        System.out.println("Carafe empty");
                         // TODO change carafe image.
                         Carafe.getComponentView().setImage(CarafeState.C0.getFrontCarafe());
                         break;
                     case "C25": // Carafe 25%
-                        System.out.println("Carafe 25%");
                         // TODO change carafe image.
                         Carafe.getComponentView().setImage(CarafeState.C25.getFrontCarafe());
                         break;
                     case "C50": // Carafe 50%
-                        System.out.println("Carafe 50%");
                         // TODO change carafe image.
                         Carafe.getComponentView().setImage(CarafeState.C50.getFrontCarafe());
                         break;
                     case "C75": // Carafe 75%
-                        System.out.println("Carafe 75%");
                         // TODO change carafe image.
                         Carafe.getComponentView().setImage(CarafeState.C75.getFrontCarafe());
                         break;
                     case "CI1": // Carafe is full
-                        System.out.println("Carafe full");
                         // TODO change carafe image.
                         Carafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                         break;
 
                     // Commands for LEDs
                     case "BLED": // Brewing LEDs
-                        System.out.println("brew LED on");
                         // TODO change LED image.
                         break;
                     case "HLED": // Heating LEDs
-                        System.out.println("heating LED on");
                         // TODO change LED image.
                         break;
                     case "ELED": // Error LEDs
-                        System.out.println("error LED on");
                         // TODO change LED image.
                         break;
                     case "ALO": // ALL LEDs off
-                        System.out.println("all LED off");
                         // TODO change LED image.
                         break;
                     case "SLTW": // Standby with water
-                        System.out.println("StandBy with water");
                         // TODO change LED image.
                         break;
                     case "SLFW": // Standby without water
-                        System.out.println("StandBy without water");
                         // TODO change LED image.
                         break;
                     // Commands for devices.
                     case "HHU": // Heater heat up
-                        System.out.println("heating up");
                         writer.println("TSS");
                         writer.println("215");
                         break;
                     case "HCD": // Heater cool down
-                        System.out.println("cooling down");
                         writer.println("TSS");
                         writer.println("0");
                         break;
