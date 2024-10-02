@@ -66,8 +66,7 @@ public class Main {
             //writer.println(MachineState.BREWING_LEDS.getCommand());
             //timer.set(1000); // Five seconds
             //timer.reset();
-            ExecutorService heatingRunner = Executors.newFixedThreadPool(1);
-            heatingRunner.submit(Main::heating);
+            heating();
 
             System.out.println("Brewing");
             writer.println("SB");
