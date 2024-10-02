@@ -177,6 +177,8 @@ public class CoffeeMakerPOVs extends Application {
         Overheat.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("TSS");
+                writer.println("1000");
                 System.out.println("Do Overheat");
             }
         });
@@ -188,6 +190,8 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage50.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("VSS");
+                writer.println("50");
                 currentVoltage = VoltState.VOLT50;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT50.getVoltage());
             }
@@ -197,6 +201,8 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage120.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("VSS");
+                writer.println("120");
                 currentVoltage = VoltState.VOLT120;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT120.getVoltage());
             }
@@ -206,6 +212,8 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage300.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("VSS");
+                writer.println("300");
                 currentVoltage = VoltState.VOLT300;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT300.getVoltage());
             }
@@ -377,13 +385,13 @@ public class CoffeeMakerPOVs extends Application {
         this.FrontPOV.setImage(FrontOFF);
         this.FrontStack = new StackPane();
 
-        DeviceComponent PowButton = new DeviceComponent("Power Button", "Provide Power", new Image("file:resources/CoffeeMakerImages/PowerButton.png"),writer);
+        DeviceComponent PowButton = new DeviceComponent("Power Button", "PBP", new Image("file:resources/CoffeeMakerImages/PowerButton.png"),writer);
 
-        DeviceComponent BrewButton = new DeviceComponent("Brew", "Brew", new Image("file:resources/CoffeeMakerImages/BrewButton.png"),writer);
+        DeviceComponent BrewButton = new DeviceComponent("Brew", "BBP", new Image("file:resources/CoffeeMakerImages/BrewButton.png"),writer);
 
-        DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "Keep Warm", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
+        DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "HBP", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
 
-        DeviceComponent Carafe =  new DeviceComponent("Carafe", "Car", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
+        DeviceComponent Carafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
 
 
         this.FrontStack.getChildren().addAll(this.FrontPOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), Carafe.getComponentView());
@@ -405,6 +413,7 @@ public class CoffeeMakerPOVs extends Application {
         Carafe.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("CSS");
                 if (carafePresence.equals(CarafeInPlace.PRESENT)) {
                     carafePresence = CarafeInPlace.MISSING;
                     Carafe.getComponentView().setTranslateX(-300);
@@ -485,8 +494,8 @@ public class CoffeeMakerPOVs extends Application {
         this.TopStack = new StackPane();
         boolean coffeePresent = false;
 
-        DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "Open", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
-        DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "Close", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
+        DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "LST", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
+        DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "LSF", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
         DeviceComponent coffeeGrind = new DeviceComponent("Coffee Grind", "Coffee", new Image("file:resources/CoffeeMakerImages/InsertCoffee.png"), writer);
         DeviceComponent coffeeHolder = new DeviceComponent("Coffee Holder", "Hold", new Image("file:resources/CoffeeMakerImages/CoffeeHolder.png"), writer);
 
@@ -524,6 +533,7 @@ public class CoffeeMakerPOVs extends Application {
         coffeeLidOpen.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("LST");
                 coffeeLidOpen.getComponentView().setVisible(false);
                 coffeeLidClosed.getComponentView().setVisible(true);
 
@@ -543,6 +553,7 @@ public class CoffeeMakerPOVs extends Application {
         coffeeLidClosed.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                writer.println("LSF");
                 coffeeLidClosed.getComponentView().setVisible(false);
                 coffeeLidOpen.getComponentView().setVisible(true);
 

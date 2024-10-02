@@ -201,13 +201,9 @@ public class Main {
                             powerButton.negate();
                             running = false;
                             break;
-                        case "CST": // CarafeSensor True;
-                            System.out.println("Carafe is in place");
-                            carafeSensor.set(true);
-                            break;
-                        case "CSF": // CarafeSensor False;
-                            System.out.println("Carafe is not In place");
-                            carafeSensor.set(false);
+                        case "CSS": // Carafe Sensor Set;
+                            carafeSensor.negate();
+                            System.out.println("Carafe is " + carafeSensor.carafeInPlace());
                             break;
                         case "LST": // LidSensor True;
                             System.out.println("Lid is down");

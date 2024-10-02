@@ -2,7 +2,7 @@ public class LidSensor {
     private boolean isClosed;
 
     public LidSensor() {
-        isClosed = false;
+        isClosed = true;
     }
 
     public void close() {
