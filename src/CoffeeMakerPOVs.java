@@ -30,6 +30,7 @@ public class CoffeeMakerPOVs extends Application {
     // Carafe ImageView
     private final ImageView CarafeImage = new ImageView();
     private Image currentCarafeImage;
+    private final DeviceComponent Carafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
 
     // Front POV items
     private final Scene FrontView;
@@ -113,11 +114,11 @@ public class CoffeeMakerPOVs extends Application {
         FrontPOV.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                currentPOV = POVList.FRONT;
+                changeVisibility();
                 FrontPane.setLeft(LeftMenu);
                 FrontPane.setRight(RightMenu);
                 Cafe.setScene(FrontView);
-                currentPOV = POVList.FRONT;
-                changeVisibility();
             }
         });
 
@@ -126,11 +127,11 @@ public class CoffeeMakerPOVs extends Application {
         RightPOV.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                currentPOV = POVList.RIGHT;
+                changeVisibility();
                 RightPane.setLeft(LeftMenu);
                 RightPane.setRight(RightMenu);
                 Cafe.setScene(RightView);
-                currentPOV = POVList.RIGHT;
-                changeVisibility();
             }
         });
 
@@ -139,11 +140,11 @@ public class CoffeeMakerPOVs extends Application {
         LeftPOV.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                currentPOV = POVList.LEFT;
+                changeVisibility();
                 LeftPane.setLeft(LeftMenu);
                 LeftPane.setRight(RightMenu);
                 Cafe.setScene(LeftView);
-                currentPOV = POVList.LEFT;
-                changeVisibility();
             }
         });
 
@@ -152,12 +153,11 @@ public class CoffeeMakerPOVs extends Application {
         TopPOV.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                currentPOV = POVList.TOP;
+                changeVisibility();
                 TopPane.setLeft(LeftMenu);
                 TopPane.setRight(RightMenu);
                 Cafe.setScene(TopView);
-                currentPOV = POVList.TOP;
-                changeVisibility();
-
             }
         });
 
@@ -166,11 +166,11 @@ public class CoffeeMakerPOVs extends Application {
         BackPOV.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                currentPOV = POVList.BACK;
+                changeVisibility();
                 BackPane.setLeft(LeftMenu);
                 BackPane.setRight(RightMenu);
                 Cafe.setScene(BackView);
-                currentPOV = POVList.BACK;
-                changeVisibility();
             }
         });
 
@@ -231,10 +231,10 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    CarafeImage.setImage(CarafeState.C0.getFrontCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C0.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    CarafeImage.setImage(CarafeState.C0.getRightCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C0.getRightCarafe());
                 }
             }
         });
@@ -245,10 +245,10 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    CarafeImage.setImage(CarafeState.C25.getFrontCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C25.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    CarafeImage.setImage(CarafeState.C25.getRightCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C25.getRightCarafe());
                 }
             }
         });
@@ -259,10 +259,10 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    CarafeImage.setImage(CarafeState.C50.getFrontCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C50.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    CarafeImage.setImage(CarafeState.C50.getRightCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C50.getRightCarafe());
                 }
             }
         });
@@ -273,10 +273,10 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    CarafeImage.setImage(CarafeState.C75.getFrontCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C75.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    CarafeImage.setImage(CarafeState.C75.getRightCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C75.getRightCarafe());
                 }
             }
         });
@@ -287,10 +287,10 @@ public class CoffeeMakerPOVs extends Application {
             @Override
             public void handle(MouseEvent event) {
                 if (currentPOV.equals(POVList.FRONT)) {
-                    CarafeImage.setImage(CarafeState.C100.getFrontCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                 }
                 else if (currentPOV.equals(POVList.RIGHT)) {
-                    CarafeImage.setImage(CarafeState.C100.getRightCarafe());
+                    Carafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
                 }
             }
         });
@@ -384,31 +384,33 @@ public class CoffeeMakerPOVs extends Application {
     private void changeVisibility() {
         switch (this.currentPOV) {
             case FRONT -> {
-                System.out.println("Front!");
+                switch (this.currentCarafe) {
+                    case C0, C25, C50, C75, C100 -> this.Carafe.getComponentView().setImage(this.currentCarafe.getFrontCarafe());
+                }
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(false);
                 this.CarafeMenu.setVisible(true);
             }
             case LEFT  -> {
-                System.out.println("Left!");
+
                 this.VoltageMenu.setVisible(true);
                 this.WaterMenu.setVisible(false);
                 this.CarafeMenu.setVisible(false);
             }
             case RIGHT -> {
-                System.out.println("Right!");
+
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(true);
                 this.CarafeMenu.setVisible(true);
             }
             case TOP   -> {
-                System.out.println("Top!");
+
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(false);
                 this.CarafeMenu.setVisible(false);
             }
             case BACK  -> {
-                System.out.println("Back!");
+
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(true);
                 this.CarafeMenu.setVisible(false);
@@ -428,8 +430,6 @@ public class CoffeeMakerPOVs extends Application {
         DeviceComponent BrewButton = new DeviceComponent("Brew", "BBP", new Image("file:resources/CoffeeMakerImages/BrewButton.png"),writer);
 
         DeviceComponent HeatButton = new DeviceComponent("Keep Warm", "HBP", new Image("file:resources/CoffeeMakerImages/KeepWarmButton.png"),writer);
-
-        DeviceComponent Carafe =  new DeviceComponent("Carafe", "CSS", new Image("file:resources/CoffeeMakerImages/Carafe/Front/CarafeEmpty.png"), writer);
 
 
         this.FrontStack.getChildren().addAll(this.FrontPOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), Carafe.getComponentView());
@@ -464,10 +464,10 @@ public class CoffeeMakerPOVs extends Application {
                 }
             }
         });
-        Carafe.getComponentView().setScaleX(0.5);
-        Carafe.getComponentView().setScaleY(0.5);
-        Carafe.getComponentView().setTranslateX(-5);
-        Carafe.getComponentView().setTranslateY(75);
+        this.Carafe.getComponentView().setScaleX(0.5);
+        this.Carafe.getComponentView().setScaleY(0.5);
+        this.Carafe.getComponentView().setTranslateX(-5);
+        this.Carafe.getComponentView().setTranslateY(75);
 
         this.FrontPane.setLeft(this.LeftMenu);
         this.FrontPane.setRight(this.RightMenu);
@@ -530,7 +530,6 @@ public class CoffeeMakerPOVs extends Application {
         Image TopOpenEmpty = new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterEmptyLidOpened.png");
         this.TopPOV.setImage(TopClosedEmpty);
         this.TopStack = new StackPane();
-        boolean coffeePresent = false;
 
         DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "LST", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
         DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "LSF", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
@@ -634,22 +633,27 @@ public class CoffeeMakerPOVs extends Application {
                     case "C00": // Carafe empty
                         System.out.println("Carafe empty");
                         // TODO change carafe image.
+                        Carafe.getComponentView().setImage(CarafeState.C0.getFrontCarafe());
                         break;
                     case "C25": // Carafe 25%
                         System.out.println("Carafe 25%");
                         // TODO change carafe image.
+                        Carafe.getComponentView().setImage(CarafeState.C25.getFrontCarafe());
                         break;
                     case "C50": // Carafe 50%
                         System.out.println("Carafe 50%");
                         // TODO change carafe image.
+                        Carafe.getComponentView().setImage(CarafeState.C50.getFrontCarafe());
                         break;
                     case "C75": // Carafe 75%
                         System.out.println("Carafe 75%");
                         // TODO change carafe image.
+                        Carafe.getComponentView().setImage(CarafeState.C75.getFrontCarafe());
                         break;
                     case "CI1": // Carafe is full
                         System.out.println("Carafe full");
                         // TODO change carafe image.
+                        Carafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                         break;
 
                     // Commands for LEDs
