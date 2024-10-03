@@ -903,10 +903,7 @@ public class CoffeeMakerPOVs extends Application {
                                         currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
                                         break;
                                     case "ELED": // Error LEDs
-                                        // TODO change LED image.
-                                        break;
-                                    case "ALO": // ALL LEDs off
-                                        // TODO change LED image.
+                                        currentMachineState = MachineState.ERROR_LEDS;
                                         break;
                                     case "SLTW": // Standby with water
                                         currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;

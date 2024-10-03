@@ -34,8 +34,6 @@ public class Main {
 
 
     public static synchronized void standBy() {
-
-        //writer.println(MachineState.ALL_LEDS_OFF.getCommand());
         // Checks if there is correct power.
         if (voltageSensor.getVoltage() == 0) {
             return;
