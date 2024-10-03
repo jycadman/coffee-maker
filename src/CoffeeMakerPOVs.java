@@ -262,7 +262,6 @@ public class CoffeeMakerPOVs extends Application {
 
         // Carafe Buttons
         Text carafeText = new Text("Carafe Menu");
-
         Button carafeEmpty = new Button();
         carafeEmpty.setText("Empty Carafe");
         carafeEmpty.setOnMouseClicked(new EventHandler<MouseEvent>() {

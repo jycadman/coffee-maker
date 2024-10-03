@@ -42,7 +42,6 @@ public class Main {
             writer.println(MachineState.ERROR_LEDS.getCommand());
             return;
         }
-
         // Checks state of power from powerButton
         if (!powerButton.get())  {
             return;
