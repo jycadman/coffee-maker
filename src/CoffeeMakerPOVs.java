@@ -78,7 +78,7 @@ public class CoffeeMakerPOVs extends Application {
     private static BufferedReader reader = null; // Use this to read from the coffee maker.
 
     // Coffee Maker Image States
-    private MachineState currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+    private MachineState currentMachineState = MachineState.ALL_LEDS_OFF;
     private CarafeInPlace carafePresence = CarafeInPlace.PRESENT;
     private CoffeeGrindState currentGrindState = CoffeeGrindState.MISSING;
     private CarafeState currentCarafe = CarafeState.C0;
@@ -185,6 +185,15 @@ public class CoffeeMakerPOVs extends Application {
                 writer.println("TSS");
                 writer.println("1000");
                 System.out.println("Do Overheat");
+            }
+        });
+
+        Button stopSim = new Button();
+        stopSim.setText("Stop Sim");
+        stopSim.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                writer.println("OFF");
             }
         });
 
@@ -421,7 +430,9 @@ public class CoffeeMakerPOVs extends Application {
         this.CarafeMenu.setAlignment(Pos.CENTER_RIGHT);
         this.CarafeMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        this.ErrorMenu.getChildren().add(Overheat);
+        stopSim.setVisible(false);
+
+        this.ErrorMenu.getChildren().addAll(Overheat, stopSim);
         this.ErrorMenu.setPrefWidth(150);
         this.ErrorMenu.setAlignment(Pos.CENTER_LEFT);
         this.ErrorMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -578,10 +589,12 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 if (currentPower.equals(PowerBlockState.UNPLUGGED)) {
                     currentPower = PowerBlockState.PLUGGED;
+                    currentMachineState = MachineState.STANDBY;
                     LeftImagePOV.setImage(LeftPlugged);
                 }
                 else {
                     currentPower = PowerBlockState.UNPLUGGED;
+                    currentMachineState = MachineState.ALL_LEDS_OFF;
                     LeftImagePOV.setImage(LeftUnplugged);
                 }
             }
@@ -732,17 +745,24 @@ public class CoffeeMakerPOVs extends Application {
         AnimationTimer handleReader = new AnimationTimer() {
             private long repeater = 0;
             final ExecutorService readBuffer = Executors.newFixedThreadPool(1);
-            final AtomicReference<Boolean> isPowered = new AtomicReference<>(true);
             final AtomicReference<Boolean> blink = new AtomicReference<>(false);
             @Override
             public void handle(long now) {
                 if (now - repeater >= 500_000_000) {
                     repeater = now;
                     AtomicReference<String> next = new AtomicReference<>("");
-                    System.out.println(currentMachineState);
                     switch (currentMachineState) {
+                        case STANDBY -> {
+                            if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                                FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
+                                writer.println("VSS");
+                                writer.println("0");
+                            }
+                        }
                         case STANDBY_LEDS_WITHOUT_WATER -> {
-                            if (isPowered.get()) {
+                            if (currentPower.equals(PowerBlockState.PLUGGED)) {
                                 if (blink.get()) {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontBYG.png"));
                                     blink.set(false);
@@ -750,15 +770,23 @@ public class CoffeeMakerPOVs extends Application {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
                                     blink.set(true);
                                 }
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
+                                writer.println("VSS");
+                                writer.println("0");
                             }
                         }
                         case STANDBY_LEDS_WITH_WATER -> {
-                            if (isPowered.get()) {
+                            if (currentPower.equals(PowerBlockState.PLUGGED)) {
                                 FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
+                                writer.println("VSS");
+                                writer.println("0");
                             }
                         }
                         case BREW_BUTTON_PRESSED -> {
-                            if (isPowered.get()) {
+                            if (currentPower.equals(PowerBlockState.PLUGGED)) {
                                 if (blink.get()) {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPYG.png"));
                                     blink.set(false);
@@ -766,18 +794,30 @@ public class CoffeeMakerPOVs extends Application {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPY.png"));
                                     blink.set(true);
                                 }
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
+                                writer.println("VSS");
+                                writer.println("0");
                             }
                         }
                         case HEATING_BUTTON_PRESSED -> {
-                            if (isPowered.get()) {
+                            if (currentPower.equals(PowerBlockState.PLUGGED)) {
                                 FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPYG.png"));
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
+                                writer.println("VSS");
+                                writer.println("0");
                             }
                         }
                         case ALL_LEDS_OFF -> {
-                            FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
+                            if (currentPower.equals(PowerBlockState.UNPLUGGED)) {
+                                FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
+                            }
+                            writer.println("VSS");
+                            writer.println("0");
                         }
                         default -> {
-                            if(isPowered.get()) {
+                            if(currentPower.equals(PowerBlockState.PLUGGED)) {
                                 if(blink.get()) {
                                     if (currentWater.equals(WaterState.WLOW) || currentWater.equals(WaterState.WEMPTY)) {
                                         FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontBYRG.png"));
@@ -790,101 +830,117 @@ public class CoffeeMakerPOVs extends Application {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
                                     blink.set(true);
                                 }
+                            } else {
+                                currentMachineState = MachineState.ALL_LEDS_OFF;
                             }
                         }
                     }
                     readBuffer.submit(() -> {
-                        try {
-                            next.set(reader.readLine());
+                        if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                            try {
+                                next.set(reader.readLine());
 
-                            switch (next.get()) {
-                                case "SB" :
-                                    currentMachineState = MachineState.BREW_BUTTON_PRESSED;
-                                    frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
-                                    System.out.println("Start");
-                                    break;
-                                case "FinB" :
-                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
-                                    writer.println(MachineState.STANDBY.getCommand());
-                                    frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
-                                    System.out.println("Finished");
-                                    System.out.println(currentCarafe.getLevel());
-                                    currentCarafe = CarafeState.C100;
-                                    break;
-                                // Commands for Carafe
-                                case "C25": // Carafe 25%
-                                    frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C25.getRightPouring());
-                                    RightImagePOV.setImage(WaterState.W75.getRight());
-                                    BackImagePOV.setImage(WaterState.W75.getBack());
-                                    TopImagePOV.setImage(WaterState.W75.getTopClosed());
-                                    currentCarafe = CarafeState.C25;
-                                    break;
-                                case "C50": // Carafe 50%
-                                    frontCarafe.getComponentView().setImage(CarafeState.C50.getFrontPouring());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C50.getRightPouring());
-                                    RightImagePOV.setImage(WaterState.W50.getRight());
-                                    BackImagePOV.setImage(WaterState.W50.getBack());
-                                    TopImagePOV.setImage(WaterState.W50.getTopClosed());
-                                    currentCarafe = CarafeState.C50;
-                                    break;
-                                case "C75": // Carafe 75%
-                                    frontCarafe.getComponentView().setImage(CarafeState.C75.getFrontPouring());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C75.getRightPouring());
-                                    RightImagePOV.setImage(WaterState.W25.getRight());
-                                    BackImagePOV.setImage(WaterState.W25.getBack());
-                                    TopImagePOV.setImage(WaterState.W25.getTopClosed());
-                                    currentCarafe = CarafeState.C75;
-                                    break;
-                                case "CI1": // Carafe is full
-                                    frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
-                                    rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
-                                    RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
-                                    BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
-                                    TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
-                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
-                                    if (currentGrindState.equals(CoffeeGrindState.PRESENT)) {
-                                        currentGrindState = CoffeeGrindState.MISSING;
-                                    }
-                                    currentCarafe = CarafeState.C100;
-                                    writer.println("RSF");
-                                    break;
+                                switch (next.get()) {
+                                    case "SB" :
+                                        currentMachineState = MachineState.BREW_BUTTON_PRESSED;
+                                        frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
+                                        System.out.println("Start");
+                                        break;
+                                    case "FinB" :
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+                                        writer.println(MachineState.STANDBY.getCommand());
+                                        frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
+                                        System.out.println("Finished");
+                                        System.out.println(currentCarafe.getLevel());
+                                        currentCarafe = CarafeState.C100;
+                                        break;
+                                    // Commands for Carafe
+                                    case "C25": // Carafe 25%
+                                        frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C25.getRightPouring());
+                                        RightImagePOV.setImage(WaterState.W75.getRight());
+                                        BackImagePOV.setImage(WaterState.W75.getBack());
+                                        TopImagePOV.setImage(WaterState.W75.getTopClosed());
+                                        currentCarafe = CarafeState.C25;
+                                        break;
+                                    case "C50": // Carafe 50%
+                                        frontCarafe.getComponentView().setImage(CarafeState.C50.getFrontPouring());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C50.getRightPouring());
+                                        RightImagePOV.setImage(WaterState.W50.getRight());
+                                        BackImagePOV.setImage(WaterState.W50.getBack());
+                                        TopImagePOV.setImage(WaterState.W50.getTopClosed());
+                                        currentCarafe = CarafeState.C50;
+                                        break;
+                                    case "C75": // Carafe 75%
+                                        frontCarafe.getComponentView().setImage(CarafeState.C75.getFrontPouring());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C75.getRightPouring());
+                                        RightImagePOV.setImage(WaterState.W25.getRight());
+                                        BackImagePOV.setImage(WaterState.W25.getBack());
+                                        TopImagePOV.setImage(WaterState.W25.getTopClosed());
+                                        currentCarafe = CarafeState.C75;
+                                        break;
+                                    case "CI1": // Carafe is full
+                                        frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
+                                        rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
+                                        RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
+                                        BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
+                                        TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+                                        if (currentGrindState.equals(CoffeeGrindState.PRESENT)) {
+                                            currentGrindState = CoffeeGrindState.MISSING;
+                                        }
+                                        currentCarafe = CarafeState.C100;
+                                        writer.println("RSF");
+                                        break;
 
-                                // Commands for LEDs
-                                case "BLED": // Brewing LEDs
-                                    currentMachineState = MachineState.BREW_BUTTON_PRESSED;
-                                    break;
-                                case "HLED": // Heating LEDs
-                                    currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
-                                    break;
-                                case "ELED": // Error LEDs
-                                    // TODO change LED image.
-                                    break;
-                                case "ALO": // ALL LEDs off
-                                    // TODO change LED image.
-                                    break;
-                                case "SLTW": // Standby with water
-                                    currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
-                                    break;
-                                case "SLFW": // Standby without water
-                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
-                                    break;
-                                // Commands for devices.
-                                case "HHU": // Heater heat up
-                                    writer.println("TSS");
-                                    writer.println("215");
-                                    break;
-                                case "HCD": // Heater cool down
-                                    writer.println("TSS");
-                                    writer.println("0");
-                                    break;
-                                default:
-                                    System.out.println("Unknown command " + next);
+                                    // Commands for LEDs
+                                    case "BLED": // Brewing LEDs
+                                        currentMachineState = MachineState.BREW_BUTTON_PRESSED;
+                                        break;
+                                    case "HLED": // Heating LEDs
+                                        currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
+                                        break;
+                                    case "ELED": // Error LEDs
+                                        // TODO change LED image.
+                                        break;
+                                    case "ALO": // ALL LEDs off
+                                        // TODO change LED image.
+                                        break;
+                                    case "SLTW": // Standby with water
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
+                                        break;
+                                    case "SLFW": // Standby without water
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+                                        break;
+                                    // Commands for devices.
+                                    case "HHU": // Heater heat up
+                                        writer.println("TSS");
+                                        writer.println("215");
+                                        break;
+                                    case "HCD": // Heater cool down
+                                        writer.println("TSS");
+                                        writer.println("0");
+                                        break;
+                                    case "PWON" :
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
+                                        break;
+                                    case "PEON" :
+                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+                                        break;
+                                    case "POFF" :
+                                        currentMachineState = MachineState.STANDBY;
+                                        break;
+                                    case "OFF" :
+                                        this.stop();
+                                        break;
+                                    default:
+                                        System.out.println("Unknown command " + next);
+                                }
+                            } catch (IOException e) {
+                                // Do nothing, continue code
                             }
-                        } catch (IOException e) {
-                            // Do nothing, continue code
                         }
                     });
 

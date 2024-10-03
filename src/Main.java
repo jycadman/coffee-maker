@@ -35,8 +35,11 @@ public class Main {
 
     public static synchronized void standBy() {
 
-        writer.println(MachineState.ALL_LEDS_OFF.getCommand());
+        //writer.println(MachineState.ALL_LEDS_OFF.getCommand());
         // Checks if there is correct power.
+        if (voltageSensor.getVoltage() == 0) {
+            return;
+        }
         if (!voltageSensor.isVoltageCorrect()){
             writer.println(MachineState.ERROR_LEDS.getCommand());
             return;
@@ -221,6 +224,7 @@ public class Main {
             @Override
             public void run() {
                 AtomicBoolean running = new AtomicBoolean(true);
+                AtomicBoolean machineOn = new AtomicBoolean(true);
                 AtomicReference<String> next = new AtomicReference<>("");
                 System.out.println("\nSocket thread running");
 
@@ -228,6 +232,7 @@ public class Main {
                     standBy();
                     try {
                         next.set(reader.readLine());
+
 
                         switch(next.get()){
                                 case "BBP": // Brew Button Pressed
@@ -242,8 +247,17 @@ public class Main {
                                     break;
                                 case "PBP": // Power Button Pressed
                                     System.out.println("Power button pressed");
-                                    powerButton.negate();
-                                    running.set(false);
+                                    if (machineOn.get()) {
+                                        machineOn.set(false);
+                                        writer.println("POFF");
+                                    } else {
+                                        machineOn.set(true);
+                                        if (reservoirSensor.hasWater()) {
+                                            writer.println("PWON");
+                                        } else {
+                                            writer.println("PEON");
+                                        }
+                                    }
                                     break;
                                 case "CSS": // Carafe Sensor Set;
                                     carafeSensor.negate();
@@ -285,6 +299,10 @@ public class Main {
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);
                                     }
+                                    break;
+                                case "OFF" :
+                                    writer.println("OFF");
+                                    running.set(false);
                                     break;
                                 default:
                                     System.out.println("Unknown command " + next);

@@ -4,7 +4,7 @@ public enum VoltState {
     VOLT120(120),
     VOLT300(300);
 
-    private int voltage;
+    private final int voltage;
 
     VoltState(int i) {
         this.voltage = i;
