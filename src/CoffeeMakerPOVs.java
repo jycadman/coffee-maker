@@ -11,7 +11,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import javax.crypto.Mac;
 import java.io.*;
 import java.net.InetAddress;
@@ -22,9 +21,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * CoffeeMakerPOVs is the class that sets up the POVs to interact with. This is
- * the boilerplate class that sets up the entire visualization. This needs to be refined.
- * Meaning I (Matt) have to make more comments and specify more interactables within the
- * Visualization.
+ * the boilerplate class that sets up the entire visualization, and handles the
+ * messages being sent to main to properly switch to the corresponding image.
  */
 public class CoffeeMakerPOVs extends Application {
     private Stage Cafe;
@@ -87,7 +85,10 @@ public class CoffeeMakerPOVs extends Application {
     private WaterState currentWater = WaterState.WEMPTY;
     private LidPosition currentLidPos = LidPosition.CLOSED;
     public CoffeeMakerPOVs() {
+        // Initialize Menus
         makeMenus();
+
+        // Connect to socket.
         try {
             coffeeMaker = new Socket(InetAddress.getByName(null), 5000);
             writer = new PrintWriter(coffeeMaker.getOutputStream(), true);
@@ -96,19 +97,29 @@ public class CoffeeMakerPOVs extends Application {
             throw new RuntimeException(e);
         }
 
+        // Generate POVs
         this.FrontView = makeFrontPOV();
         this.LeftView = makeLeftPOV();
         this.RightView = makeRightPOV();
         this.BackView = makeBackPOV();
         this.TopView = makeTopPOV();
 
+        // Set initial POV
         this.currentPOV = POVList.FRONT;
         changeVisibility();
     }
 
+    /**
+     * makeMenus()
+     * A method to make the initial menus and user
+     * interactables for the visualization. Mainly
+     * for buttons, as this does NOT include any images.
+     */
     private void makeMenus() {
-
         // POV Switching buttons
+        // Handles the switching of perspective,
+        // and showing the correct menus at specific
+        // times.
         Text POVText = new Text("POV Menu");
 
         Button FrontPOV = new Button();
@@ -177,6 +188,7 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Error Buttons
+        // Not implemented, but should have been able to incite an edge case.
         Button Overheat = new Button();
         Overheat.setText("Overheat");
         Overheat.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -198,6 +210,8 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Voltage Buttons
+        // Set the voltage currently being
+        // received by the coffee maker.
         Text currentVolts = new Text("Power Block Voltage: " + currentVoltage.getVoltage());
         Button setVoltage0 = new Button();
         setVoltage0.setText("Set Voltage to 0");
@@ -255,6 +269,10 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Carafe Buttons
+        // Fill the carafe to a specific line,
+        // Extra functionality for the sim would
+        // have been that the carafe can overflow, or
+        // finish brewing early given the water level.
         Text carafeText = new Text("Carafe Menu");
         Button carafeEmpty = new Button();
         carafeEmpty.setText("Empty Carafe");
@@ -332,8 +350,9 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Water Buttons
+        // Set the reservoir to a specific level of water,
+        // Extra functionality similar to carafe as seen above.
         Text waterText = new Text("Water Menu");
-
         Button waterEmpty = new Button();
         waterEmpty.setText("Empty reservoir");
         waterEmpty.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -430,6 +449,8 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Menu setup
+        // Add all the buttons to respective menus, and respective
+        // areas on the main BorderPane.
         this.POVMenu.getChildren().addAll(POVText, FrontPOV, RightPOV, LeftPOV, TopPOV, BackPOV);
         this.POVMenu.setPrefWidth(150);
         this.POVMenu.setAlignment(Pos.CENTER_RIGHT);
@@ -464,6 +485,10 @@ public class CoffeeMakerPOVs extends Application {
         this.LeftMenu.setAlignment(Pos.CENTER_LEFT);
     }
 
+    /**
+     * Handles when POV switching to ensure the correct
+     * image is being shown at the correct times.
+     */
     private void changeVisibility() {
         switch (this.currentPOV) {
             case FRONT -> {
@@ -534,8 +559,15 @@ public class CoffeeMakerPOVs extends Application {
 
     }
 
+    /**
+     * @return the Front POV scene to show
+     * Generates the initial front POV of the
+     * visualization.
+     */
     private Scene makeFrontPOV() {
-
+        // Front POV is for interacting with the buttons, and viewing MachineState and the LEDs associated with
+        // the specified state.
+        // Initial image
         Image FrontOFF = new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png");
         this.FrontImagePOV.setImage(FrontOFF);
         StackPane frontStack = new StackPane();
@@ -598,7 +630,15 @@ public class CoffeeMakerPOVs extends Application {
         return new Scene(this.FrontPane);
     }
 
+    /**
+     * @return the left POV scene to show
+     * Generates the initial left POV of the
+     * visualization.
+     */
     private Scene makeLeftPOV() {
+        // Left POV is for setting voltage, and
+        // plugging/unplugging the coffee maker
+        // Initial Image
         Image LeftUnplugged = new Image("file:resources/CoffeeMakerImages/POV/Left/LeftUnplugged.png");
         Image LeftPlugged = new Image("file:resources/CoffeeMakerImages/POV/Left/LeftPlugged.png");
         this.LeftImagePOV.setImage(LeftUnplugged);
@@ -635,7 +675,15 @@ public class CoffeeMakerPOVs extends Application {
         return new Scene(this.LeftPane);
     }
 
+    /**
+     * @return the right POV scene to show
+     * Generates the initial right POV of the
+     * visualization
+     */
     private Scene makeRightPOV() {
+        // Right POV is to show water level increase/decrease,
+        // as well as Carafe filling with coffee.
+        // Initial image
         Image WaterEmpty = new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterEmpty.png");
         this.RightImagePOV.setImage(WaterEmpty);
         StackPane rightStack = new StackPane();
@@ -671,7 +719,14 @@ public class CoffeeMakerPOVs extends Application {
         return new Scene(this.RightPane);
     }
 
+    /**
+     * @return the back POV scene to show
+     * Generates the initial back POV of the
+     * visualization
+     */
     private Scene makeBackPOV() {
+        // Back POV is to show off the water sensor.
+        // Initial image
         Image BackEmpty = new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterEmpty.png");
         this.BackImagePOV.setImage(BackEmpty);
         StackPane backStack = new StackPane();
@@ -681,13 +736,22 @@ public class CoffeeMakerPOVs extends Application {
         return new Scene(this.BackPane);
     }
 
+    /**
+     * @return the top POV scene to show
+     * Generates the initial top POV of the
+     * visualization
+     */
     private Scene makeTopPOV() {
+        // Top POV is to interact with the lid and place
+        // coffee grind into the correct place.
+        // Initial Image
         Image TopClosedEmpty = new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterEmptyLidClosed.png");
-        Image TopOpenEmpty = new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterEmptyLidOpened.png");
         this.TopImagePOV.setImage(TopClosedEmpty);
         StackPane topStack = new StackPane();
         topStack.setPrefWidth(1000);
 
+        // Create DeviceComponent interactables for the visualization
+        // and message sending.
         DeviceComponent coffeeLidOpen = new DeviceComponent("Open Lid", "LST", new Image("file:resources/CoffeeMakerImages/POV/top/LidOpen.png"), writer);
         DeviceComponent coffeeLidClosed = new DeviceComponent("Closed Lid", "LSF", new Image("file:resources/CoffeeMakerImages/POV/top/LidClosed.png"), writer);
 
@@ -775,14 +839,28 @@ public class CoffeeMakerPOVs extends Application {
         this.Cafe.show();
 
         AnimationTimer handleReader = new AnimationTimer() {
+            // repeater is for checking time, and properly looping within
+            // handleReader so that handleReader doesn't spam Main
+            // 60 times per second (60 frames in a second).
             private long repeater = 0;
+
+            // readBuffer is the ExecutorService that runs the
+            // parsing thread that CoffeeMakerPOVs uses to intake
+            // messages from Main.
             final ExecutorService readBuffer = Executors.newFixedThreadPool(1);
+
+            // blink is just for visualization reference, to make the
+            // LEDs blink every now and then.
             final AtomicReference<Boolean> blink = new AtomicReference<>(false);
             @Override
             public void handle(long now) {
+                // Repeats every second.
                 if (now - repeater >= 1_000_000_000) {
                     repeater = now;
                     AtomicReference<String> next = new AtomicReference<>("");
+
+                    // currentMachineState checks every second to update the front POV image
+                    // to the proper sequence of LEDs
                     switch (currentMachineState) {
                         case STANDBY -> {
                             if (currentPower.equals(PowerBlockState.PLUGGED)) {
@@ -867,6 +945,8 @@ public class CoffeeMakerPOVs extends Application {
                             }
                         }
                     }
+
+                    // readBuffer begins parsing here if a message from Main is to be read.
                     readBuffer.submit(() -> {
                         if (currentPower.equals(PowerBlockState.PLUGGED)) {
                             try {
