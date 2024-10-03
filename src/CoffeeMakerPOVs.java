@@ -204,8 +204,6 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage0.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-//                writer.println("VSS");
-//                writer.println("50");
                 currentVoltage = VoltState.VOLT0;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT0.getVoltage());
                 if (currentPower.equals(PowerBlockState.PLUGGED)) {
@@ -219,8 +217,6 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage50.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-//                writer.println("VSS");
-//                writer.println("50");
                 currentVoltage = VoltState.VOLT50;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT50.getVoltage());
                 if (currentPower.equals(PowerBlockState.PLUGGED)) {
@@ -234,8 +230,6 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage120.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-//                writer.println("VSS");
-//                writer.println("120");
                 currentVoltage = VoltState.VOLT120;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT120.getVoltage());
                 if (currentPower.equals(PowerBlockState.PLUGGED)) {
@@ -879,44 +873,44 @@ public class CoffeeMakerPOVs extends Application {
                                 next.set(reader.readLine());
 
                                 switch (next.get()) {
-                                    case "SB" :
+                                    case "SB" -> {
                                         currentMachineState = MachineState.BREW_BUTTON_PRESSED;
                                         frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
                                         rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
-                                        break;
-                                    case "FinB" :
+                                    }
+                                    case "FinB" -> {
                                         currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                                         writer.println(MachineState.STANDBY.getCommand());
                                         frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                                         rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
                                         currentCarafe = CarafeState.C100;
-                                        break;
+                                    }
                                     // Commands for Carafe
-                                    case "C25": // Carafe 25%
+                                    case "C25" -> { // Carafe 25%
                                         frontCarafe.getComponentView().setImage(CarafeState.C25.getFrontPouring());
                                         rightCarafe.getComponentView().setImage(CarafeState.C25.getRightPouring());
                                         RightImagePOV.setImage(WaterState.W75.getRight());
                                         BackImagePOV.setImage(WaterState.W75.getBack());
                                         TopImagePOV.setImage(WaterState.W75.getTopClosed());
                                         currentCarafe = CarafeState.C25;
-                                        break;
-                                    case "C50": // Carafe 50%
+                                    }
+                                    case "C50" -> { // Carafe 50%
                                         frontCarafe.getComponentView().setImage(CarafeState.C50.getFrontPouring());
                                         rightCarafe.getComponentView().setImage(CarafeState.C50.getRightPouring());
                                         RightImagePOV.setImage(WaterState.W50.getRight());
                                         BackImagePOV.setImage(WaterState.W50.getBack());
                                         TopImagePOV.setImage(WaterState.W50.getTopClosed());
                                         currentCarafe = CarafeState.C50;
-                                        break;
-                                    case "C75": // Carafe 75%
+                                    }
+                                    case "C75" -> { // Carafe 75%
                                         frontCarafe.getComponentView().setImage(CarafeState.C75.getFrontPouring());
                                         rightCarafe.getComponentView().setImage(CarafeState.C75.getRightPouring());
                                         RightImagePOV.setImage(WaterState.W25.getRight());
                                         BackImagePOV.setImage(WaterState.W25.getBack());
                                         TopImagePOV.setImage(WaterState.W25.getTopClosed());
                                         currentCarafe = CarafeState.C75;
-                                        break;
-                                    case "CI1": // Carafe is full
+                                    }
+                                    case "CI1" -> { // Carafe is full
                                         frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                                         rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
                                         RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
@@ -928,47 +922,34 @@ public class CoffeeMakerPOVs extends Application {
                                         }
                                         currentCarafe = CarafeState.C100;
                                         writer.println("RSF");
-                                        break;
+                                    }
 
                                     // Commands for LEDs
-                                    case "BLED": // Brewing LEDs
-                                        currentMachineState = MachineState.BREW_BUTTON_PRESSED;
-                                        break;
-                                    case "HLED": // Heating LEDs
-                                        currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
-                                        break;
-                                    case "ELED": // Error LEDs
-                                        currentMachineState = MachineState.ERROR_LEDS;
-                                        break;
-                                    case "SLTW": // Standby with water
-                                        currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
-                                        break;
-                                    case "SLFW": // Standby without water
-                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
-                                        break;
+                                    case "BLED" -> // Brewing LEDs
+                                            currentMachineState = MachineState.BREW_BUTTON_PRESSED;
+                                    case "HLED" -> // Heating LEDs
+                                            currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
+                                    case "ELED" -> // Error LEDs
+                                            currentMachineState = MachineState.ERROR_LEDS;
+                                    case "SLTW" -> // Standby with water
+                                            currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
+                                    case "SLFW" -> // Standby without water
+                                            currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+
                                     // Commands for devices.
-                                    case "HHU": // Heater heat up
+                                    case "HHU" -> { // Heater heat up
                                         writer.println("TSS");
                                         writer.println("215");
-                                        break;
-                                    case "HCD": // Heater cool down
+                                    }
+                                    case "HCD" -> { // Heater cool down
                                         writer.println("TSS");
                                         writer.println("0");
-                                        break;
-                                    case "PWON" :
-                                        currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
-                                        break;
-                                    case "PEON" :
-                                        currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
-                                        break;
-                                    case "POFF" :
-                                        currentMachineState = MachineState.STANDBY;
-                                        break;
-                                    case "OFF" :
-                                        this.stop();
-                                        break;
-                                    default:
-                                        System.out.println("Unknown command " + next);
+                                    }
+                                    case "PWON" -> currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
+                                    case "PEON" -> currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
+                                    case "POFF" -> currentMachineState = MachineState.STANDBY;
+                                    case "OFF" -> this.stop();
+                                    default -> System.out.println("Unknown command " + next);
                                 }
                             } catch (IOException e) {
                                 // Do nothing, continue code

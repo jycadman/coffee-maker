@@ -67,17 +67,12 @@ public class Main {
         //brewButton.negate();
 
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
-            //writer.println(MachineState.HEAT_UP.getCommand());
             writer.println(MachineState.BREWING_LEDS.getCommand());
-            //timer.set(1000); // Five seconds
-            //timer.reset();
             heating();
 
             System.out.println("Brewing");
             writer.println("SB");
-            //writer.println("C00");
 
-            //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -85,7 +80,6 @@ public class Main {
             }
             writer.println("C25");
 
-            //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -93,7 +87,6 @@ public class Main {
             }
             writer.println("C50");
 
-            //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -101,7 +94,6 @@ public class Main {
             }
             writer.println("C75");
 
-            //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -137,32 +129,11 @@ public class Main {
         writer.println(MachineState.HEATING_LEDS.getCommand());
         writer.println(MachineState.HEAT_UP.getCommand());
 
-        //timer.set(15000);
-        //timer.reset();
-
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        /*
-        while (!timer.timeout() && !heatingButton.getStatus()){
-            if (temperatureSensor.getTemp() > maxWaterTemp){
-                writer.println(MachineState.ERROR_LEDS.getCommand());
-                writer.println(MachineState.COOL_DOWN.getCommand());
-                return;
-            }
-        }
-         */
-
-        //if (timer.timeout()) {
-        //    System.out.println("Timed out");
-        //}
-
-        //if (heatingButton.getStatus()){
-        //    heatingButton.turnOff();
-        //}
-
         writer.println(MachineState.COOL_DOWN.getCommand());
     }
 
@@ -316,9 +287,10 @@ public class Main {
                         }
                 }, 0, 1, TimeUnit.SECONDS);
                 while(running.get()) {
-                    // These parse commands sent from the terminal
-                    // and changes the devices. Some commands expect
-                    // an integer to be given as well.
+                    // This loop is here to ensure
+                    // perserThread does not kill itself
+                    // until the stopSim button is pressed
+                    // On vis.
                 }
                 threadRunner.shutdown();
                 readExecutor.shutdown();
@@ -330,23 +302,6 @@ public class Main {
             }
         });
         perserThread.start();
-//        standbyThread.start();
-//        brewingThread.start();
-//        heaterThread.start();
-
-//        while(!powerButton.get()){
-//            // I don't know why the print is needed, but errors happen without it.
-//            System.out.print("");
-//            standbyThread.start();
-//            if (brewButton.getStatus()){
-//                brewButton.negate();
-//                brewingThread.start();
-//            }
-//            else if (heatingButton.getStatus()) {
-//                heatingButton.negate();
-//                heaterThread.start();
-//            }
-//        }
 
         //////// SOCKET SECTION ////////
 
