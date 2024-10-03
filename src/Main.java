@@ -35,11 +35,16 @@ public class Main {
 
     public static synchronized void standBy() {
         // Checks if there is correct power.
-        if (voltageSensor.getVoltage() == 0) {
+        if (voltageSensor.getVoltage() != 120) {
             return;
         }
         if (!voltageSensor.isVoltageCorrect()){
             writer.println(MachineState.ERROR_LEDS.getCommand());
+            return;
+        }
+
+        // Checks state of power from powerButton
+        if (!powerButton.get())  {
             return;
         }
 
@@ -75,7 +80,7 @@ public class Main {
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -83,7 +88,7 @@ public class Main {
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -91,7 +96,7 @@ public class Main {
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -99,7 +104,7 @@ public class Main {
 
             //while (!timer.timeout() && !brewButton.getStatus()){}
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -245,6 +250,7 @@ public class Main {
                                     break;
                                 case "PBP": // Power Button Pressed
                                     System.out.println("Power button pressed");
+                                    powerButton.negate();
                                     if (machineOn.get()) {
                                         machineOn.set(false);
                                         writer.println("POFF");
@@ -292,7 +298,7 @@ public class Main {
                                 case "VSS": // Voltage sensor set
                                     try {
                                         String num = reader.readLine();
-                                        System.out.println("Setting voltage to " + num);
+                                        //System.out.println("Setting voltage to " + num);
                                         voltageSensor.setVoltage(Integer.parseInt(num));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);

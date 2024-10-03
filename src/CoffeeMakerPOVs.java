@@ -83,7 +83,7 @@ public class CoffeeMakerPOVs extends Application {
     private CoffeeGrindState currentGrindState = CoffeeGrindState.MISSING;
     private CarafeState currentCarafe = CarafeState.C0;
     private PowerBlockState currentPower = PowerBlockState.UNPLUGGED;
-    private VoltState currentVoltage = VoltState.VOLT120;
+    private VoltState currentVoltage = VoltState.VOLT0;
     private WaterState currentWater = WaterState.WEMPTY;
     private LidPosition currentLidPos = LidPosition.CLOSED;
     public CoffeeMakerPOVs() {
@@ -198,14 +198,25 @@ public class CoffeeMakerPOVs extends Application {
         });
 
         // Voltage Buttons
-        Text currentVolts = new Text("Power Block Voltage: 120");
+        Text currentVolts = new Text("Power Block Voltage: " + currentVoltage.getVoltage());
+        Button setVoltage0 = new Button();
+        setVoltage0.setText("Set Voltage to 0");
+        setVoltage0.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+//                writer.println("VSS");
+//                writer.println("50");
+                currentVoltage = VoltState.VOLT0;
+                currentVolts.setText("Power Block Voltage: " + VoltState.VOLT0.getVoltage());
+            }
+        });
         Button setVoltage50 = new Button();
         setVoltage50.setText("Set Voltage to 50");
         setVoltage50.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                writer.println("VSS");
-                writer.println("50");
+//                writer.println("VSS");
+//                writer.println("50");
                 currentVoltage = VoltState.VOLT50;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT50.getVoltage());
             }
@@ -215,8 +226,8 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage120.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                writer.println("VSS");
-                writer.println("120");
+//                writer.println("VSS");
+//                writer.println("120");
                 currentVoltage = VoltState.VOLT120;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT120.getVoltage());
             }
@@ -226,8 +237,8 @@ public class CoffeeMakerPOVs extends Application {
         setVoltage300.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                writer.println("VSS");
-                writer.println("300");
+//                writer.println("VSS");
+//                writer.println("300");
                 currentVoltage = VoltState.VOLT300;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT300.getVoltage());
             }
@@ -415,7 +426,7 @@ public class CoffeeMakerPOVs extends Application {
         this.POVMenu.setAlignment(Pos.CENTER_RIGHT);
         this.POVMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
-        this.VoltageMenu.getChildren().addAll(currentVolts, setVoltage50, setVoltage120, setVoltage300);
+        this.VoltageMenu.getChildren().addAll(currentVolts, setVoltage0, setVoltage50, setVoltage120, setVoltage300);
         this.VoltageMenu.setPrefWidth(150);
         this.VoltageMenu.setAlignment(Pos.CENTER_LEFT);
         this.VoltageMenu.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
@@ -748,13 +759,25 @@ public class CoffeeMakerPOVs extends Application {
             final AtomicReference<Boolean> blink = new AtomicReference<>(false);
             @Override
             public void handle(long now) {
-                if (now - repeater >= 500_000_000) {
+                if (now - repeater >= 1_000_000_000) {
                     repeater = now;
                     AtomicReference<String> next = new AtomicReference<>("");
                     switch (currentMachineState) {
                         case STANDBY -> {
                             if (currentPower.equals(PowerBlockState.PLUGGED)) {
-                                FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
+                                if (currentVoltage.equals(VoltState.VOLT120)) {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
+                                } else {
+                                    if (blink.get()) {
+                                        FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
+                                        blink.set(false);
+                                    } else {
+                                        FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
+                                        blink.set(true);
+                                    }
+                                }
+                                writer.println("VSS");
+                                writer.println(currentVoltage.getVoltage());
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
                                 writer.println("VSS");
@@ -845,15 +868,12 @@ public class CoffeeMakerPOVs extends Application {
                                         currentMachineState = MachineState.BREW_BUTTON_PRESSED;
                                         frontCarafe.getComponentView().setImage(CarafeState.C0.getFrontPouring());
                                         rightCarafe.getComponentView().setImage(CarafeState.C0.getRightPouring());
-                                        System.out.println("Start");
                                         break;
                                     case "FinB" :
                                         currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                                         writer.println(MachineState.STANDBY.getCommand());
                                         frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                                         rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
-                                        System.out.println("Finished");
-                                        System.out.println(currentCarafe.getLevel());
                                         currentCarafe = CarafeState.C100;
                                         break;
                                     // Commands for Carafe
