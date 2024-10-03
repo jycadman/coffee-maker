@@ -63,7 +63,7 @@ public class Main {
 
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
             //writer.println(MachineState.HEAT_UP.getCommand());
-            //writer.println(MachineState.BREWING_LEDS.getCommand());
+            writer.println(MachineState.BREWING_LEDS.getCommand());
             //timer.set(1000); // Five seconds
             //timer.reset();
             heating();

@@ -10,14 +10,14 @@ public enum MachineState {
     TEMPERATURE_SENSOR_SET("TSS"),
     VOLTAGE_SENSOR_SET("VSS"),
     HEAT_UP("HHU"),
-    COOL_DOWN("HCD"),
+    COOL_DOWN("HCD"), // Pink Yellow
     STANDBY("STBY"),
-    BREWING_LEDS("BLED"), //Pink, yellow, green
+    BREWING_LEDS("BLED"), //Pink, yellow, green (Blinking)
     HEATING_LEDS("HLED"),//Pink, yellow,
     ERROR_LEDS("ELED"),
     ALL_LEDS_OFF("ALO"),
-    STANDBY_LEDS_WITH_WATER("SLTW"),
-    STANDBY_LEDS_WITHOUT_WATER("SLFW");
+    STANDBY_LEDS_WITH_WATER("SLTW"), // Blue yellow Green
+    STANDBY_LEDS_WITHOUT_WATER("SLFW"); // Yellow Green
 
 
     private final String command;

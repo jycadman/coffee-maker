@@ -78,7 +78,7 @@ public class CoffeeMakerPOVs extends Application {
     private static BufferedReader reader = null; // Use this to read from the coffee maker.
 
     // Coffee Maker Image States
-    private MachineState currentMachineState = MachineState.ALL_LEDS_OFF;
+    private MachineState currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
     private CarafeInPlace carafePresence = CarafeInPlace.PRESENT;
     private CoffeeGrindState currentGrindState = CoffeeGrindState.MISSING;
     private CarafeState currentCarafe = CarafeState.C0;
@@ -312,6 +312,7 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 writer.println("RSF");
                 currentWater = WaterState.WEMPTY;
+                currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                 RightImagePOV.setImage(WaterState.WEMPTY.getRight());
                 BackImagePOV.setImage(WaterState.WEMPTY.getBack());
                 if (currentLidPos.equals(LidPosition.CLOSED)) {
@@ -330,6 +331,7 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 writer.println("RST");
                 currentWater = WaterState.W25;
+                currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
                 RightImagePOV.setImage(WaterState.W25.getRight());
                 BackImagePOV.setImage(WaterState.W25.getBack());
                 if (currentLidPos.equals(LidPosition.CLOSED)) {
@@ -348,6 +350,7 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 writer.println("RST");
                 currentWater = WaterState.W50;
+                currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
                 RightImagePOV.setImage(WaterState.W50.getRight());
                 BackImagePOV.setImage(WaterState.W50.getBack());
                 if (currentLidPos.equals(LidPosition.CLOSED)) {
@@ -366,6 +369,7 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 writer.println("RST");
                 currentWater = WaterState.W75;
+                currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
                 RightImagePOV.setImage(WaterState.W75.getRight());
                 BackImagePOV.setImage(WaterState.W75.getBack());
                 if (currentLidPos.equals(LidPosition.CLOSED)) {
@@ -384,6 +388,7 @@ public class CoffeeMakerPOVs extends Application {
             public void handle(MouseEvent event) {
                 writer.println("RST");
                 currentWater = WaterState.W100;
+                currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
                 RightImagePOV.setImage(WaterState.W100.getRight());
                 BackImagePOV.setImage(WaterState.W100.getBack());
                 if (currentLidPos.equals(LidPosition.CLOSED)) {
@@ -445,7 +450,7 @@ public class CoffeeMakerPOVs extends Application {
                     this.frontCarafe.getComponentView().setTranslateX(-300);
                 }
                 else {
-                    this.frontCarafe.getComponentView().setTranslateX(-5);
+                    this.frontCarafe.getComponentView().setTranslateX(-15);
                 }
                 this.VoltageMenu.setVisible(false);
                 this.WaterMenu.setVisible(false);
@@ -500,7 +505,7 @@ public class CoffeeMakerPOVs extends Application {
 
     private Scene makeFrontPOV() {
 
-        Image FrontOFF = new Image("file:resources/CoffeeMakerImages/POV/Front/Front.png");
+        Image FrontOFF = new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png");
         this.FrontImagePOV.setImage(FrontOFF);
         StackPane frontStack = new StackPane();
         frontStack.setPrefWidth(1000);
@@ -513,17 +518,17 @@ public class CoffeeMakerPOVs extends Application {
 
 
         frontStack.getChildren().addAll(this.FrontImagePOV, PowButton.getComponentView(), HeatButton.getComponentView(), BrewButton.getComponentView(), frontCarafe.getComponentView());
-        PowButton.getComponentView().setTranslateX(180);
+        PowButton.getComponentView().setTranslateX(171);
         PowButton.getComponentView().setTranslateY(-257);
         PowButton.getComponentView().setScaleX(1.65);
         PowButton.getComponentView().setScaleY(1.65);
 
-        BrewButton.getComponentView().setTranslateX(12);
+        BrewButton.getComponentView().setTranslateX(3);
         BrewButton.getComponentView().setTranslateY(-257);
         BrewButton.getComponentView().setScaleX(1.35);
         BrewButton.getComponentView().setScaleY(1.35);
 
-        HeatButton.getComponentView().setTranslateX(-142);
+        HeatButton.getComponentView().setTranslateX(-151);
         HeatButton.getComponentView().setTranslateY(-257);
         HeatButton.getComponentView().setScaleX(1.35);
         HeatButton.getComponentView().setScaleY(1.35);
@@ -535,18 +540,16 @@ public class CoffeeMakerPOVs extends Application {
                 if (carafePresence.equals(CarafeInPlace.PRESENT)) {
                     carafePresence = CarafeInPlace.MISSING;
                     frontCarafe.getComponentView().setTranslateX(-300);
-                    System.out.println("Carafe is now MISSING");
                 }
                 else {
                     carafePresence = CarafeInPlace.PRESENT;
-                    frontCarafe.getComponentView().setTranslateX(-5);
-                    System.out.println("Carafe is now PRESENT");
+                    frontCarafe.getComponentView().setTranslateX(-15);
                 }
             }
         });
         this.frontCarafe.getComponentView().setScaleX(0.5);
         this.frontCarafe.getComponentView().setScaleY(0.5);
-        this.frontCarafe.getComponentView().setTranslateX(-5);
+        this.frontCarafe.getComponentView().setTranslateX(-14);
         this.frontCarafe.getComponentView().setTranslateY(75);
 
         this.FrontPane.setLeft(this.LeftMenu);
@@ -729,11 +732,67 @@ public class CoffeeMakerPOVs extends Application {
         AnimationTimer handleReader = new AnimationTimer() {
             private long repeater = 0;
             final ExecutorService readBuffer = Executors.newFixedThreadPool(1);
+            final AtomicReference<Boolean> isPowered = new AtomicReference<>(true);
+            final AtomicReference<Boolean> blink = new AtomicReference<>(false);
             @Override
             public void handle(long now) {
-                if (now - repeater >= 1_000_000_000) {
+                if (now - repeater >= 500_000_000) {
                     repeater = now;
                     AtomicReference<String> next = new AtomicReference<>("");
+                    System.out.println(currentMachineState);
+                    switch (currentMachineState) {
+                        case STANDBY_LEDS_WITHOUT_WATER -> {
+                            if (isPowered.get()) {
+                                if (blink.get()) {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontBYG.png"));
+                                    blink.set(false);
+                                } else {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
+                                    blink.set(true);
+                                }
+                            }
+                        }
+                        case STANDBY_LEDS_WITH_WATER -> {
+                            if (isPowered.get()) {
+                                FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
+                            }
+                        }
+                        case BREW_BUTTON_PRESSED -> {
+                            if (isPowered.get()) {
+                                if (blink.get()) {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPYG.png"));
+                                    blink.set(false);
+                                } else {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPY.png"));
+                                    blink.set(true);
+                                }
+                            }
+                        }
+                        case HEATING_BUTTON_PRESSED -> {
+                            if (isPowered.get()) {
+                                FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPYG.png"));
+                            }
+                        }
+                        case ALL_LEDS_OFF -> {
+                            FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
+                        }
+                        default -> {
+                            if(isPowered.get()) {
+                                if(blink.get()) {
+                                    if (currentWater.equals(WaterState.WLOW) || currentWater.equals(WaterState.WEMPTY)) {
+                                        FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontBYRG.png"));
+                                        blink.set(false);
+                                    } else {
+                                        FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYRG.png"));
+                                        blink.set(false);
+                                    }
+                                } else {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
+                                    blink.set(true);
+                                }
+                            }
+                        }
+                    }
                     readBuffer.submit(() -> {
                         try {
                             next.set(reader.readLine());
@@ -746,7 +805,7 @@ public class CoffeeMakerPOVs extends Application {
                                     System.out.println("Start");
                                     break;
                                 case "FinB" :
-                                    currentMachineState = MachineState.STANDBY;
+                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                                     writer.println(MachineState.STANDBY.getCommand());
                                     frontCarafe.getComponentView().setImage(CarafeState.C100.getFrontCarafe());
                                     rightCarafe.getComponentView().setImage(CarafeState.C100.getRightCarafe());
@@ -785,6 +844,7 @@ public class CoffeeMakerPOVs extends Application {
                                     RightImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Right/RightWaterLow.png"));
                                     BackImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Back/BackWaterLow.png"));
                                     TopImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Top/TopWaterLowLidClosed.png"));
+                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                                     if (currentGrindState.equals(CoffeeGrindState.PRESENT)) {
                                         currentGrindState = CoffeeGrindState.MISSING;
                                     }
@@ -794,10 +854,10 @@ public class CoffeeMakerPOVs extends Application {
 
                                 // Commands for LEDs
                                 case "BLED": // Brewing LEDs
-                                    // TODO change LED image.
+                                    currentMachineState = MachineState.BREW_BUTTON_PRESSED;
                                     break;
                                 case "HLED": // Heating LEDs
-                                    // TODO change LED image.
+                                    currentMachineState = MachineState.HEATING_BUTTON_PRESSED;
                                     break;
                                 case "ELED": // Error LEDs
                                     // TODO change LED image.
@@ -806,10 +866,10 @@ public class CoffeeMakerPOVs extends Application {
                                     // TODO change LED image.
                                     break;
                                 case "SLTW": // Standby with water
-                                    // TODO change LED image.
+                                    currentMachineState = MachineState.STANDBY_LEDS_WITH_WATER;
                                     break;
                                 case "SLFW": // Standby without water
-                                    // TODO change LED image.
+                                    currentMachineState = MachineState.STANDBY_LEDS_WITHOUT_WATER;
                                     break;
                                 // Commands for devices.
                                 case "HHU": // Heater heat up
@@ -827,6 +887,7 @@ public class CoffeeMakerPOVs extends Application {
                             // Do nothing, continue code
                         }
                     });
+
                 }
 
             }
