@@ -39,7 +39,8 @@ public class Main {
             return;
         }
         if (!voltageSensor.isVoltageCorrect()){
-            writer.println(MachineState.ERROR_LEDS.getCommand());
+            //writer.println(MachineState.ERROR_LEDS.getCommand());
+            ledBank.Error(writer);
             return;
         }
         // Checks state of power from powerButton
@@ -49,9 +50,11 @@ public class Main {
 
         // Checks if the reservoir has water.
         if (reservoirSensor.hasWater()){
-            writer.println(MachineState.STANDBY_LEDS_WITH_WATER.getCommand());
+            //writer.println(MachineState.STANDBY_LEDS_WITH_WATER.getCommand());
+            ledBank.StandByWithWater(writer);
         } else {
-            writer.println(MachineState.STANDBY_LEDS_WITHOUT_WATER.getCommand());
+            //writer.println(MachineState.STANDBY_LEDS_WITHOUT_WATER.getCommand());
+            ledBank.StandByWithoutWater(writer);
         }
 
         // The timer and for loop are so the coffee maker does not spam the socket. It waits for
@@ -67,7 +70,8 @@ public class Main {
         //brewButton.negate();
 
         if (carafeSensor.carafeInPlace() & reservoirSensor.hasWater() & lidSensor.isClosed()) {
-            writer.println(MachineState.BREWING_LEDS.getCommand());
+            //writer.println(MachineState.BREWING_LEDS.getCommand());
+            ledBank.Brewing(writer);
             heating();
 
             System.out.println("Brewing");
@@ -109,7 +113,8 @@ public class Main {
             }
 
             System.out.println("Brewing Done");
-            writer.println(MachineState.COOL_DOWN.getCommand());
+            //writer.println(MachineState.COOL_DOWN.getCommand());
+            heater.coolDown(writer);
         } else {
             System.out.println("Failed to Brew");
         }
@@ -126,15 +131,18 @@ public class Main {
             return;
         }
 
-        writer.println(MachineState.HEATING_LEDS.getCommand());
-        writer.println(MachineState.HEAT_UP.getCommand());
+        //writer.println(MachineState.HEATING_LEDS.getCommand());
+        ledBank.Heating(writer);
+        //writer.println(MachineState.HEAT_UP.getCommand());
+        heater.heatUp(writer);
 
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        writer.println(MachineState.COOL_DOWN.getCommand());
+        //writer.println(MachineState.COOL_DOWN.getCommand());
+        heater.coolDown(writer);
     }
 
     public static void main(String[] args) {

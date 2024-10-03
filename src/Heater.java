@@ -1,11 +1,11 @@
 import java.io.PrintWriter;
 
 public class Heater {
-    public String heatUp(PrintWriter writer) {
-        return "HHU";
+    public void heatUp(PrintWriter writer) {
+        writer.println(MachineState.HEAT_UP.getCommand());
     }
 
-    public String coolDown(PrintWriter writer) {
-        return "HCD";
+    public void coolDown(PrintWriter writer) {
+        writer.println(MachineState.COOL_DOWN.getCommand());
     }
 }
