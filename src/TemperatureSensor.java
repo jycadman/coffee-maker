@@ -1,5 +1,5 @@
 public class TemperatureSensor {
-    private int currentTemp = 0;
+    private int currentTemp = 72;
 
     public void setTemp(int input){
         currentTemp = input;
