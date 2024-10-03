@@ -298,7 +298,7 @@ public class Main {
                                 case "VSS": // Voltage sensor set
                                     try {
                                         String num = reader.readLine();
-                                        //System.out.println("Setting voltage to " + num);
+                                        System.out.println("Setting voltage to " + num);
                                         voltageSensor.setVoltage(Integer.parseInt(num));
                                     } catch (IOException e) {
                                         throw new RuntimeException(e);

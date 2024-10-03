@@ -208,6 +208,10 @@ public class CoffeeMakerPOVs extends Application {
 //                writer.println("50");
                 currentVoltage = VoltState.VOLT0;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT0.getVoltage());
+                if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                    writer.println("VSS");
+                    writer.println("0");
+                }
             }
         });
         Button setVoltage50 = new Button();
@@ -219,6 +223,10 @@ public class CoffeeMakerPOVs extends Application {
 //                writer.println("50");
                 currentVoltage = VoltState.VOLT50;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT50.getVoltage());
+                if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                    writer.println("VSS");
+                    writer.println("50");
+                }
             }
         });
         Button setVoltage120 = new Button();
@@ -230,6 +238,10 @@ public class CoffeeMakerPOVs extends Application {
 //                writer.println("120");
                 currentVoltage = VoltState.VOLT120;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT120.getVoltage());
+                if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                    writer.println("VSS");
+                    writer.println("120");
+                }
             }
         });
         Button setVoltage300 = new Button();
@@ -241,6 +253,10 @@ public class CoffeeMakerPOVs extends Application {
 //                writer.println("300");
                 currentVoltage = VoltState.VOLT300;
                 currentVolts.setText("Power Block Voltage: " + VoltState.VOLT300.getVoltage());
+                if (currentPower.equals(PowerBlockState.PLUGGED)) {
+                    writer.println("VSS");
+                    writer.println("300");
+                }
             }
         });
 
@@ -544,6 +560,14 @@ public class CoffeeMakerPOVs extends Application {
         PowButton.getComponentView().setTranslateY(-257);
         PowButton.getComponentView().setScaleX(1.65);
         PowButton.getComponentView().setScaleY(1.65);
+        PowButton.getComponentView().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (currentPower.equals(PowerBlockState.PLUGGED) && currentVoltage.equals(VoltState.VOLT120)) {
+                    writer.println(PowButton.getComm());
+                }
+            }
+        });
 
         BrewButton.getComponentView().setTranslateX(3);
         BrewButton.getComponentView().setTranslateY(-257);
@@ -602,11 +626,15 @@ public class CoffeeMakerPOVs extends Application {
                     currentPower = PowerBlockState.PLUGGED;
                     currentMachineState = MachineState.STANDBY;
                     LeftImagePOV.setImage(LeftPlugged);
+                    writer.println("VSS");
+                    writer.println(currentVoltage.getVoltage());
                 }
                 else {
                     currentPower = PowerBlockState.UNPLUGGED;
                     currentMachineState = MachineState.ALL_LEDS_OFF;
                     LeftImagePOV.setImage(LeftUnplugged);
+                    writer.println("VSS");
+                    writer.println("0");
                 }
             }
         });
@@ -767,6 +795,8 @@ public class CoffeeMakerPOVs extends Application {
                             if (currentPower.equals(PowerBlockState.PLUGGED)) {
                                 if (currentVoltage.equals(VoltState.VOLT120)) {
                                     FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
+                                } else if (currentVoltage.equals(VoltState.VOLT0)) {
+                                    FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
                                 } else {
                                     if (blink.get()) {
                                         FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontY.png"));
@@ -776,12 +806,8 @@ public class CoffeeMakerPOVs extends Application {
                                         blink.set(true);
                                     }
                                 }
-                                writer.println("VSS");
-                                writer.println(currentVoltage.getVoltage());
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
-                                writer.println("VSS");
-                                writer.println("0");
                             }
                         }
                         case STANDBY_LEDS_WITHOUT_WATER -> {
@@ -795,8 +821,6 @@ public class CoffeeMakerPOVs extends Application {
                                 }
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
-                                writer.println("VSS");
-                                writer.println("0");
                             }
                         }
                         case STANDBY_LEDS_WITH_WATER -> {
@@ -804,8 +828,6 @@ public class CoffeeMakerPOVs extends Application {
                                 FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontYG.png"));
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
-                                writer.println("VSS");
-                                writer.println("0");
                             }
                         }
                         case BREW_BUTTON_PRESSED -> {
@@ -819,8 +841,6 @@ public class CoffeeMakerPOVs extends Application {
                                 }
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
-                                writer.println("VSS");
-                                writer.println("0");
                             }
                         }
                         case HEATING_BUTTON_PRESSED -> {
@@ -828,16 +848,12 @@ public class CoffeeMakerPOVs extends Application {
                                 FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontPYG.png"));
                             } else {
                                 currentMachineState = MachineState.ALL_LEDS_OFF;
-                                writer.println("VSS");
-                                writer.println("0");
                             }
                         }
                         case ALL_LEDS_OFF -> {
                             if (currentPower.equals(PowerBlockState.UNPLUGGED)) {
                                 FrontImagePOV.setImage(new Image("file:resources/CoffeeMakerImages/POV/Front/FrontOff.png"));
                             }
-                            writer.println("VSS");
-                            writer.println("0");
                         }
                         default -> {
                             if(currentPower.equals(PowerBlockState.PLUGGED)) {
